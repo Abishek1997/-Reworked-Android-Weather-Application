@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Weather Application</string>
+    <string name="today">Today</string>
+    <string name="photos">Photos</string>
+    <string name="weekly">Weekly</string>
 </resources>

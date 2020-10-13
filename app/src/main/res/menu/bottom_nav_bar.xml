@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/todayTabFragment"
+        android:icon="@drawable/today_tab_icon"
+        android:title="@string/today">
+    </item>
+    <item
+        android:id="@+id/weeklyTabFragment"
+        android:icon="@drawable/weekly_tab_icon"
+        android:title="@string/weekly">
+    </item>
+    <item
+        android:id="@+id/photosTabFragment"
+        android:icon="@drawable/photos_tab_icon"
+        android:title="@string/photos">
+    </item>
+</menu>

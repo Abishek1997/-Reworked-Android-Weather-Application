@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/todayTabFragment">
+
+    <fragment
+        android:id="@+id/photosTabFragment"
+        android:name="com.example.weatherApp.ui.searchResultDetails.photosTab.PhotosTabFragment"
+        android:label="photos_tab_fragment"
+        tools:layout="@layout/photos_tab_fragment" />
+    <fragment
+        android:id="@+id/todayTabFragment"
+        android:name="com.example.weatherApp.ui.searchResultDetails.todayTab.TodayTabFragment"
+        android:label="today_tab_fragment"
+        tools:layout="@layout/today_tab_fragment" />
+    <fragment
+        android:id="@+id/weeklyTabFragment"
+        android:name="com.example.weatherApp.ui.searchResultDetails.weeklyTab.WeeklyTabFragment"
+        android:label="weekly_tab_fragment"
+        tools:layout="@layout/weekly_tab_fragment" />
+</navigation>

@@ -3,4 +3,23 @@
     <string name="today">Today</string>
     <string name="photos">Photos</string>
     <string name="weekly">Weekly</string>
+    <string name="icon_image">Icon image</string>
+    <string name="information_icon">Information icon</string>
+    <string name="degree_fahrenheit">&#xb0;F</string>
+    <string name="degree_celcius">&#xb0;C</string>
+    <string name="humidity">Humidity</string>
+    <string name="humidity_icon">Humidity icon</string>
+    <string name="wind_icon">Wind icon</string>
+    <string name="wind_speed">Wind Speed</string>
+    <string name="visibility_icon">Visibility Icon</string>
+    <string name="visibility">Visibility</string>
+    <string name="pressure_icon">Pressure Icon</string>
+    <string name="pressure">Pressure</string>
+    <string name="percent_symbol"> %</string>
+    <string name="windSpeed_unit"> mph</string>
+    <string name="visibility_unit"> km</string>
+    <string name="space">\u0020</string>
+    <string name="pressure_unit">mb</string>
+    <string name="loading">Loading</string>
+    <string name="card_image">Card Image</string>
 </resources>

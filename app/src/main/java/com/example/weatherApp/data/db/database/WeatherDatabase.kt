@@ -20,15 +20,18 @@ import com.example.weatherApp.data.db.typeconverters.MinutelyDataTypeConverter
 abstract class WeatherDatabase : RoomDatabase() {
     abstract fun getCurrentWeatherDao(): CurrentWeatherDAO
 
-    @Volatile private var instance: WeatherDatabase? = null
-    private val lock = Any()
+    companion object{
+        @Volatile private var instance: WeatherDatabase? = null
+        private val lock = Any()
 
-    operator fun invoke(context: Context) = instance ?: synchronized(lock){
-        instance ?: buildDatabase(context).also { instance = it }
+        operator fun invoke(context: Context) = instance ?: synchronized(lock){
+            instance ?: buildDatabase(context).also { instance = it }
+        }
+
+        private fun buildDatabase(context: Context) =
+            Room.databaseBuilder(context.applicationContext,
+                WeatherDatabase::class.java, "WeatherDatabase.db")
+                .build()
     }
 
-    private fun buildDatabase(context: Context) =
-        Room.databaseBuilder(context.applicationContext,
-            WeatherDatabase::class.java, "WeatherDatabase.db")
-            .build()
 }

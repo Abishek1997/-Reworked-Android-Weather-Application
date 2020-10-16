@@ -30,6 +30,10 @@ android {
     }
 }
 
+androidExtensions {
+    experimental = true
+}
+
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlin_version}"
@@ -58,6 +62,7 @@ dependencies {
 
     //Room
     implementation 'androidx.room:room-runtime:2.2.5'
+    implementation "androidx.room:room-ktx:2.2.5"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt 'androidx.room:room-compiler:2.2.5'
     kapt "android.arch.persistence.room:compiler:1.1.1"
@@ -78,7 +83,11 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 
     // Kodein
-    implementation("org.kodein.di:kodein-di-jvm:7.1.0")
+    def kodein_version = "5.2.0"
+    implementation "org.kodein.di:kodein-di-generic-jvm:$kodein_version"
+    //noinspection GradleDependency
+    implementation "org.kodein.di:kodein-di-framework-android-x:$kodein_version"
+
 
     // Glide
     implementation 'com.github.bumptech.glide:glide:4.11.0'
@@ -92,4 +101,12 @@ dependencies {
 
     //Better date-time handling
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.4'
+
+    //CardView
+    implementation "androidx.cardview:cardview:1.0.0"
+
+    //Groupie RecyclerView
+    def groupie_version = "2.8.1"
+    implementation "com.xwray:groupie:$groupie_version"
+    implementation "com.xwray:groupie-kotlin-android-extensions:$groupie_version"
 }

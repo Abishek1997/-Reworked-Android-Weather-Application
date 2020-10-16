@@ -1,7 +1,13 @@
 package com.example.weatherApp.ui.weatherSearchResult
 
 import androidx.lifecycle.ViewModel
+import com.example.weatherApp.data.repository.WeatherRepository
+import com.example.weatherApp.internal.lazyDeferred
 
-class WeatherSearchResultViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+class WeatherSearchResultViewModel(
+    private val weatherRepository: WeatherRepository
+) : ViewModel() {
+    val currentWeather by lazyDeferred {
+        weatherRepository.getCurrentWeather()
+    }
 }

@@ -23,6 +23,7 @@ class WeatherRepositoryImpl(
     }
     override suspend fun getCurrentWeather(): LiveData<out CurrentWeatherEntity> {
         return withContext(Dispatchers.IO) {
+            initFetchWeatherData()
             return@withContext currentWeatherDAO.getCurrentWeatherFromDB()
         }
     }

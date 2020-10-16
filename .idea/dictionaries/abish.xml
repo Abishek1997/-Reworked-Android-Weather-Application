@@ -1,6 +1,7 @@
 <component name="ProjectDictionaryState">
   <dictionary name="abish">
     <words>
+      <w>celcius</w>
       <w>darksky</w>
       <w>gson</w>
       <w>kodein</w>
@@ -8,6 +9,7 @@
       <w>textview</w>
       <w>upsert</w>
       <w>weatherapplication</w>
+      <w>windspeed</w>
     </words>
   </dictionary>
 </component>

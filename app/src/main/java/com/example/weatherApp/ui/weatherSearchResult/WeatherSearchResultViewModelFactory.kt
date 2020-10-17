@@ -9,6 +9,6 @@ class WeatherSearchResultViewModelFactory(
     private val weatherRepository : WeatherRepository
 ): ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return WeatherSearchResultViewModel(weatherRepository) as T
+        return WeatherSearchResultViewModel(weatherRepository,) as T
     }
 }

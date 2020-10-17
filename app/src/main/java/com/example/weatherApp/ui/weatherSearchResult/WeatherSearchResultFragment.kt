@@ -1,7 +1,6 @@
 package com.example.weatherApp.ui.weatherSearchResult
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,23 +8,26 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.Weatherapplication.R
+import com.example.weatherApp.data.db.entities.CurrentWeatherEntity
 import com.example.weatherApp.data.network.pojos.DailyData
 import com.example.weatherApp.ui.customcoroutines.ScopedFragment
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
 import kotlinx.android.synthetic.main.weather_search_result_fragment.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 import kotlin.math.roundToInt
-import com.xwray.groupie.GroupieViewHolder
 
+@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
     override val kodein by closestKodein()
     private val viewModelFactory: WeatherSearchResultViewModelFactory by instance()
     private val currentCity = "Los Angeles, CA, USA"
 
     private lateinit var viewModel: WeatherSearchResultViewModel
+    private var cityName: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,41 +36,50 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
         return inflater.inflate(R.layout.weather_search_result_fragment, container, false)
     }
 
+    fun putArguments(args: Bundle){
+        cityName = args.getString("searchQuery").toString()
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(WeatherSearchResultViewModel::class.java)
-
-        bindUI()
+        bindUI(cityName)
 
     }
 
-    private fun bindUI() = launch {
+    private fun bindUI(city: String) = launch {
         val currentWeather = viewModel.currentWeather.await()
-        currentWeather.observe(viewLifecycleOwner, Observer{
-            if (it == null) {
-                group_ready.visibility = View.GONE
-                group_loading.visibility = View.VISIBLE
-                return@Observer
-            }
+        if (cityName == "") {
+            currentWeather.observe(viewLifecycleOwner, Observer {
+                if (it == null) {
+                    group_ready.visibility = View.GONE
+                    group_loading.visibility = View.VISIBLE
+                    return@Observer
+                }
 
-            group_loading.visibility = View.GONE
-            group_ready.visibility = View.VISIBLE
+                group_loading.visibility = View.GONE
+                group_ready.visibility = View.VISIBLE
+                getRawData(it)
 
-            val rawTemperature = it.currently.temperature
-            val rawSummary = it.currently.summary
-            val rawIcon = it.currently.icon
-            setUIFirstCard(rawTemperature, rawSummary, rawIcon)
+            })
+        }
+    }
 
-            val rawHumidity = it.currently.humidity
-            val rawWindSpeed = it.currently.windSpeed
-            val rawVisibility = it.currently.visibility
-            val rawPressure = it.currently.pressure
-            setUISecondCard(rawHumidity, rawWindSpeed, rawVisibility, rawPressure)
+    private fun getRawData(it: CurrentWeatherEntity){
+        val rawTemperature = it.currently.temperature
+        val rawSummary = it.currently.summary
+        val rawIcon = it.currently.icon
+        setUIFirstCard(rawTemperature, rawSummary, rawIcon)
 
-            val rawDailyData = it.daily.data
-            setUIThirdCard(rawDailyData.toRecyclerViewItem())
-        })
+        val rawHumidity = it.currently.humidity
+        val rawWindSpeed = it.currently.windSpeed
+        val rawVisibility = it.currently.visibility
+        val rawPressure = it.currently.pressure
+        setUISecondCard(rawHumidity, rawWindSpeed, rawVisibility, rawPressure)
+
+        val rawDailyData = it.daily.data
+        setUIThirdCard(rawDailyData.toRecyclerViewItem())
     }
 
     private fun List<DailyData>.toRecyclerViewItem(): List<RecyclerViewItem>{
@@ -84,12 +95,18 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
         setIconFromData(rawIcon)
     }
 
-    private fun setUISecondCard(rawHumidity: Double, rawWindSpeed: Double, rawVisibility: Double, rawPressure: Double){
+    private fun setUISecondCard(
+        rawHumidity: Double,
+        rawWindSpeed: Double,
+        rawVisibility: Double,
+        rawPressure: Double
+    ){
         val humidity = rawHumidity.roundToInt().toString() + getString(R.string.percent_symbol)
-        val windSpeed = rawWindSpeed.roundToInt().toString() + getString(R.string.space) + getString(R.string.windSpeed_unit)
+        val windSpeed = rawWindSpeed.roundToInt().toString() + getString(R.string.space) + getString(
+            R.string.windSpeed_unit
+        )
         val visibility = rawVisibility.toString() + getString(R.string.space) + getString(R.string.visibility_unit)
         val pressure = rawPressure.toString() + getString(R.string.space) + getString(R.string.pressure_unit)
-        Log.d("data", pressure.toString())
         textView_humidity_value.text = humidity
         textView_windSpeed_value.text = windSpeed
         textView_visibility_value.text = visibility
@@ -110,7 +127,7 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
         }
     }
 
-    private fun setUIThirdCard (items: List<RecyclerViewItem>){
+    private fun setUIThirdCard(items: List<RecyclerViewItem>){
         val groupieAdapter = GroupAdapter<GroupieViewHolder>().apply {
             addAll(items)
         }

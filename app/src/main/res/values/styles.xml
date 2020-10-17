@@ -12,7 +12,7 @@
     </style>
 
     <style name="ToolbarTheme">
-        <item name="android:background"> #000000 </item>
+        <item name="android:background"> #1E1E1E </item>
         <item name="android:textColorPrimary"> #EEEEEE </item>
         <item name="android:textColorSecondary"> #FFFFFF </item>
     </style>

@@ -12,6 +12,7 @@ class WeatherNetworkDataSourceImpl(
     private val darkskyWeatherApiService: DarkskyWeatherApiService
 ): WeatherNetworkDataSource {
     private val _downloadedCurrentWeather = MutableLiveData<CurrentWeatherEntity>()
+
     override val downloadedCurrentWeather: LiveData<CurrentWeatherEntity>
         get() = _downloadedCurrentWeather
 

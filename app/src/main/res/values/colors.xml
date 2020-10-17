@@ -11,4 +11,5 @@
     <color name="color_fill_param_icons">#BB86FC</color>
     <color name="color_text_fill_lowest_opacity">#858585</color>
     <color name="color_text_fill_highest_opacity">#ffffff</color>
+    <color name="color_fill_white">#fff</color>
 </resources>

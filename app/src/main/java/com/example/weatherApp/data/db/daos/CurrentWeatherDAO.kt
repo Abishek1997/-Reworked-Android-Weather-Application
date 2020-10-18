@@ -17,4 +17,7 @@ interface CurrentWeatherDAO {
 
     @Query (value = "Select * from current_weather where id = $PRIMARY_KEY")
     fun getCurrentWeatherFromDB(): LiveData<CurrentWeatherEntity>
+
+    @Query (value = "Select * from current_weather where id = $PRIMARY_KEY")
+    fun getDataFromDB(): CurrentWeatherEntity
 }

@@ -19,7 +19,7 @@ data class CurrentWeatherEntity(
     val hourly: Hourly,
     @Embedded(prefix = "minutely_")
     val minutely: Minutely?,
-    val offset: Int,
+    val offset: Double,
     @Embedded(prefix = "location_")
     val location: LocationEntity
 )

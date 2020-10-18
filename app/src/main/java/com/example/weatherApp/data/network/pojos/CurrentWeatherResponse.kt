@@ -7,6 +7,6 @@ data class CurrentWeatherResponse(
     val daily: Daily,
     val hourly: Hourly,
     val minutely: Minutely,
-    val offset: Int,
+    val offset: Double,
     val location: Location
 )

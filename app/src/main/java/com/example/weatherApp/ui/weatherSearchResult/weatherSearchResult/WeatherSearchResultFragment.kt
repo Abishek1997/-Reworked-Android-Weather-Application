@@ -1,4 +1,4 @@
-package com.example.weatherApp.ui.weatherSearchResult
+package com.example.weatherApp.ui.weatherSearchResult.weatherSearchResult
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +11,7 @@ import com.example.Weatherapplication.R
 import com.example.weatherApp.data.db.entities.CurrentWeatherEntity
 import com.example.weatherApp.data.network.pojos.DailyData
 import com.example.weatherApp.ui.customcoroutines.ScopedFragment
+import com.example.weatherApp.ui.helpers.RecyclerViewItem
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import kotlinx.android.synthetic.main.weather_search_result_fragment.*
@@ -24,10 +25,9 @@ import kotlin.math.roundToInt
 class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
     override val kodein by closestKodein()
     private val viewModelFactory: WeatherSearchResultViewModelFactory by instance()
-    private val currentCity = "Los Angeles, CA, USA"
-
     private lateinit var viewModel: WeatherSearchResultViewModel
-    private var cityName: String = ""
+
+    private val currentCity = "Los Angeles, CA, USA"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,37 +36,35 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
         return inflater.inflate(R.layout.weather_search_result_fragment, container, false)
     }
 
-    fun putArguments(args: Bundle){
-        cityName = args.getString("searchQuery").toString()
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(WeatherSearchResultViewModel::class.java)
-        bindUI(cityName)
+        bindUI()
 
     }
 
-    private fun bindUI(city: String) = launch {
+    private fun bindUI() = launch {
         val currentWeather = viewModel.currentWeather.await()
-        if (cityName == "") {
-            currentWeather.observe(viewLifecycleOwner, Observer {
-                if (it == null) {
-                    group_ready.visibility = View.GONE
-                    group_loading.visibility = View.VISIBLE
-                    return@Observer
-                }
 
-                group_loading.visibility = View.GONE
-                group_ready.visibility = View.VISIBLE
-                getRawData(it)
+        currentWeather.observe(viewLifecycleOwner, Observer {
+            if (it == null) {
+                group_ready.visibility = View.GONE
+                group_loading.visibility = View.VISIBLE
+                return@Observer
+            }
 
-            })
-        }
+            group_loading.visibility = View.GONE
+            group_ready.visibility = View.VISIBLE
+            getRawData(it)
+        })
     }
 
     private fun getRawData(it: CurrentWeatherEntity){
+
+        val city = it.location.city
+        textView_city.text = city
+
         val rawTemperature = it.currently.temperature
         val rawSummary = it.currently.summary
         val rawIcon = it.currently.icon
@@ -88,7 +86,7 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
         }
     }
     private fun setUIFirstCard(rawTemperature: Double, rawSummary: String, rawIcon: String) {
-        textView_city.text = currentCity
+
         val temperature = rawTemperature.roundToInt().toString() + getString(R.string.degree_fahrenheit)
         textView_temperature.text = temperature
         textView_summary.text = rawSummary

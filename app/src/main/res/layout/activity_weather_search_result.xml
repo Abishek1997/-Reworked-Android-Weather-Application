@@ -24,7 +24,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/headlines_fragment"
-        android:name="com.example.weatherApp.ui.weatherSearchResult.WeatherSearchResultFragment"
+        android:name="com.example.weatherApp.ui.weatherSearchResult.weatherSearchResult.WeatherSearchResultFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"

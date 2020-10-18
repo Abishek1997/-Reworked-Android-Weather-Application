@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.weatherApp.data.db.entities.CurrentWeatherEntity
 import com.example.weatherApp.data.network.DarkskyWeatherApiService
-import com.example.weatherApp.data.network.pojos.CurrentWeatherResponse
 import com.example.weatherApp.internal.NoConnectivityException
 
 class WeatherNetworkDataSourceImpl(
@@ -19,6 +18,16 @@ class WeatherNetworkDataSourceImpl(
     override suspend fun fetchCurrentWeather(latitude: Double, longitude: Double) {
         try {
             val fetchCurrentWeather = darkskyWeatherApiService.getCurrentWeatherAsync(latitude, longitude)
+                .await()
+            _downloadedCurrentWeather.postValue(fetchCurrentWeather)
+        }
+        catch (e: NoConnectivityException){
+            Log.e("Connectivity", "No internet connection", e)
+        }
+    }
+    override suspend fun fetchSearchedWeather(city: String) {
+        try {
+            val fetchCurrentWeather = darkskyWeatherApiService.getSearchedWeatherAsync(city)
                 .await()
             _downloadedCurrentWeather.postValue(fetchCurrentWeather)
         }

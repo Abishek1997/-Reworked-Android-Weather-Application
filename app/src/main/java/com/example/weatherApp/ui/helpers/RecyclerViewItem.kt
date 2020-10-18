@@ -1,13 +1,11 @@
-package com.example.weatherApp.ui.weatherSearchResult
+package com.example.weatherApp.ui.helpers
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Drawable
 import com.example.Weatherapplication.R
 import com.example.weatherApp.data.network.pojos.DailyData
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.recycler_view_list_item.*
-import kotlinx.android.synthetic.main.weather_search_result_fragment.*
 import java.text.SimpleDateFormat
 import java.util.*
 

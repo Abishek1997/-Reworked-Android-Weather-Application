@@ -15,10 +15,16 @@ const val API_KEY = "ab5f43553f9630945af0a4a8c0c3e4f2"
 
 // http://10.0.2.2:8081/currentLocationWeather?lat=34.04563903808594&lon=-118.24163818359375
 interface DarkskyWeatherApiService {
+
     @GET("currentLocationWeather")
     fun getCurrentWeatherAsync(
         @Query(value = "lat") latitude: Double,
         @Query(value = "lon") longitude: Double
+    ): Deferred<CurrentWeatherEntity>
+
+    @GET("searchLocationWeather")
+    fun getSearchedWeatherAsync(
+        @Query(value = "city") city: String
     ): Deferred<CurrentWeatherEntity>
 
     companion object{

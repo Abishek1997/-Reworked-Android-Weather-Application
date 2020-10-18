@@ -8,6 +8,7 @@
       <w>precip</w>
       <w>textview</w>
       <w>upsert</w>
+      <w>viewmodel</w>
       <w>weatherapplication</w>
       <w>windspeed</w>
     </words>

@@ -12,7 +12,7 @@ data class Currently(
     val pressure: Double,
     val summary: String,
     val temperature: Double,
-    val time: Int,
+    val time: Long,
     val uvIndex: Double,
     val visibility: Double,
     val windSpeed: Double

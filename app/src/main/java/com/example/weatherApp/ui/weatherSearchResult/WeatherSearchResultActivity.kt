@@ -7,12 +7,24 @@ import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.ViewModelProvider
 import com.example.Weatherapplication.R
+import com.example.weatherApp.ui.weatherSearchResult.weatherSearchResult.WeatherSearchResultViewModel
+import com.example.weatherApp.ui.weatherSearchResult.weatherSearchResult.WeatherSearchResultViewModelFactory
 import kotlinx.android.synthetic.main.activity_search_result_details.*
+import kotlinx.coroutines.runBlocking
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-class WeatherSearchResultActivity : AppCompatActivity() {
+class WeatherSearchResultActivity : AppCompatActivity(), KodeinAware{
+
+    override val kodein by closestKodein()
+    private val viewModelFactory: WeatherSearchActivityViewmodelFactory by instance()
+    private lateinit var viewModel: WeatherSearchActivityViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_weather_search_result)
@@ -20,6 +32,9 @@ class WeatherSearchResultActivity : AppCompatActivity() {
             AppCompatDelegate.MODE_NIGHT_YES
         )
         setSupportActionBar(toolbar)
+
+        viewModel = ViewModelProvider(this, viewModelFactory)
+            .get(WeatherSearchActivityViewModel::class.java)
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.search_menu_item, menu)
@@ -31,10 +46,10 @@ class WeatherSearchResultActivity : AppCompatActivity() {
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                val bundle = Bundle()
-                bundle.putString("searchQuery", query)
-                WeatherSearchResultFragment().putArguments(bundle)
+            override fun onQueryTextSubmit(query: String): Boolean {
+                runBlocking {
+                    viewModel.setQueryToRepository(query)
+                }
                 searchView.setQuery("", false)
                 searchView.clearFocus()
                 searchItem.collapseActionView()

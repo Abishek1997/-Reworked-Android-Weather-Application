@@ -1,8 +1,10 @@
 package com.example.weatherApp.data.network
 
 import com.example.weatherApp.data.db.entities.CurrentWeatherEntity
+import com.example.weatherApp.data.db.entities.ImagesResponseEntity
 import com.example.weatherApp.data.network.connectivity.ConnectivityInterceptor
 import com.example.weatherApp.data.network.pojos.CurrentWeatherResponse
+import com.example.weatherApp.data.network.pojos.ImagesResponse
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
@@ -26,6 +28,11 @@ interface DarkskyWeatherApiService {
     fun getSearchedWeatherAsync(
         @Query(value = "city") city: String
     ): Deferred<CurrentWeatherEntity>
+
+    @GET("cityImages")
+    fun getCityImagesAsync(
+        @Query(value = "city") city: String
+    ): Deferred<ImagesResponseEntity>
 
     companion object{
         operator fun invoke(

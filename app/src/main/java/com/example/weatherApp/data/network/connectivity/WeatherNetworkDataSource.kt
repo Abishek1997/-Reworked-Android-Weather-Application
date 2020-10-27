@@ -2,10 +2,13 @@ package com.example.weatherApp.data.network.connectivity
 
 import androidx.lifecycle.LiveData
 import com.example.weatherApp.data.db.entities.CurrentWeatherEntity
+import com.example.weatherApp.data.db.entities.ImagesResponseEntity
 import com.example.weatherApp.data.network.pojos.CurrentWeatherResponse
+import com.example.weatherApp.data.network.pojos.ImagesResponse
 
 interface WeatherNetworkDataSource {
     val downloadedCurrentWeather: LiveData<CurrentWeatherEntity>
+    val downloadedCityImages: LiveData<ImagesResponseEntity>
 
     suspend fun fetchCurrentWeather(
        latitude: Double,
@@ -13,6 +16,10 @@ interface WeatherNetworkDataSource {
     )
 
     suspend fun fetchSearchedWeather(
+        city: String
+    )
+
+    suspend fun getCityImages(
         city: String
     )
 }

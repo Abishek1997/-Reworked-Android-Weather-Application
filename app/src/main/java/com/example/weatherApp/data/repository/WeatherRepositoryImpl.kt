@@ -1,11 +1,11 @@
 package com.example.weatherApp.data.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
+import com.example.weatherApp.data.db.daos.CityImagesDAO
 import com.example.weatherApp.data.db.daos.CurrentWeatherDAO
 import com.example.weatherApp.data.db.entities.CurrentWeatherEntity
+import com.example.weatherApp.data.db.entities.ImagesResponseEntity
 import com.example.weatherApp.data.db.entities.LocationEntity
-import com.example.weatherApp.data.network.connectivity.LocationProvider
 import com.example.weatherApp.data.network.connectivity.WeatherNetworkDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -19,7 +19,7 @@ import org.threeten.bp.ZonedDateTime
 class WeatherRepositoryImpl(
     private val currentWeatherDAO: CurrentWeatherDAO,
     private val weatherNetworkDataSource: WeatherNetworkDataSource,
-    private val locationProvider: LocationProvider
+    private val cityImagesDAO: CityImagesDAO
 ) : WeatherRepository {
 
     init{
@@ -27,10 +27,27 @@ class WeatherRepositoryImpl(
             persistFetchedCurrentWeather(newCurrentWeather)
         }
 
+        weatherNetworkDataSource.downloadedCityImages.observeForever{ newCityImages ->
+            persistCityImages(newCityImages)
+        }
     }
+
+    override suspend fun getWeatherData(): LiveData<out CurrentWeatherEntity> {
+        return withContext(Dispatchers.IO) {
+            return@withContext currentWeatherDAO.getCurrentWeatherFromDB()
+        }
+    }
+
+    override suspend fun getCityImages(): LiveData<out ImagesResponseEntity> {
+        return withContext(Dispatchers.IO) {
+            return@withContext cityImagesDAO.getCityImagesFromDB()
+        }
+    }
+
     override suspend fun getCurrentWeather(): LiveData<out CurrentWeatherEntity> {
         return withContext(Dispatchers.IO) {
             initFetchWeatherData()
+            initFetchCityImages()
             return@withContext currentWeatherDAO.getCurrentWeatherFromDB()
         }
     }
@@ -41,8 +58,17 @@ class WeatherRepositoryImpl(
         }
     }
 
+    override suspend fun getSearchedCityImages(city: String) {
+        return withContext(Dispatchers.IO) {
+            initFetchSearchedCityImages(city)
+        }
+    }
+
+    private suspend fun initFetchSearchedCityImages(city: String){
+        fetchSearchedCityImages(city)
+    }
+
     private suspend fun initFetchSearchedWeatherData(city: String){
-        //TODO: Check if fetch is needed
         fetchSearchedWeather(city)
     }
 
@@ -56,16 +82,40 @@ class WeatherRepositoryImpl(
     }
 
     private suspend fun initFetchWeatherData(){
-        val lastLocation: LocationEntity = currentWeatherDAO.getDataFromDB().location
 
-        val lastFetchTimeEpoch: Long = currentWeatherDAO.getDataFromDB().currently.time
-        val timeInstant = Instant.ofEpochSecond(lastFetchTimeEpoch)
-        val timezone = currentWeatherDAO.getDataFromDB().location.timezone
-        val zoneID = ZoneId.of(timezone)
-        val zonedDateTime = ZonedDateTime.ofInstant(timeInstant, zoneID)
-
-        if (!lastLocation.latitude.equals(34.04563903808594) || !lastLocation.longitude.equals(-118.24163818359375) || isFetchNeeded(zonedDateTime)) {
+        if (currentWeatherDAO.getDataFromDB() == null){
             fetchCurrentWeather()
+        }
+        else{
+            val lastLocation: LocationEntity = currentWeatherDAO.getDataFromDB()!!.location
+
+            val lastFetchTimeEpoch: Long = currentWeatherDAO.getDataFromDB()!!.currently!!.time
+            val timeInstant = Instant.ofEpochSecond(lastFetchTimeEpoch)
+            val timezone = currentWeatherDAO.getDataFromDB()!!.location.timezone
+            val zoneID = ZoneId.of(timezone)
+            val zonedDateTime = ZonedDateTime.ofInstant(timeInstant, zoneID)
+
+            if (!lastLocation.latitude.equals(34.04563903808594) || !lastLocation.longitude.equals(-118.24163818359375) || isFetchNeeded(zonedDateTime)) {
+                fetchCurrentWeather()
+            }
+        }
+    }
+
+    private suspend fun initFetchCityImages(){
+        fetchCityImages()
+    }
+
+    private suspend fun fetchSearchedCityImages(city: String){
+        weatherNetworkDataSource.getCityImages(city)
+    }
+
+    private suspend fun fetchCityImages(){
+        weatherNetworkDataSource.getCityImages("Los Angeles")
+    }
+
+    private fun persistCityImages(fetchedCityImages: ImagesResponseEntity){
+        GlobalScope.launch(Dispatchers.IO) {
+            cityImagesDAO.upsertCityImages(fetchedCityImages)
         }
     }
 

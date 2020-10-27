@@ -10,8 +10,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class RecyclerViewItem(
-    private val dailyWeatherEntry: DailyData
+    val dailyWeatherEntry: DailyData
 ) : Item(){
+    @SuppressLint("SetTextI18n")
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             val dateString = setDate(dailyWeatherEntry.time)
@@ -20,15 +21,15 @@ class RecyclerViewItem(
             val rawIcon = dailyWeatherEntry.icon
             recyclerView_card_icon.setImageResource(setIcon(rawIcon))
 
-            recyclerView_card_tempMin.text = dailyWeatherEntry.temperatureLow.toString()
-            recyclerView_card_tempMax.text = dailyWeatherEntry.temperatureHigh.toString()
+            recyclerView_card_tempMin.text = dailyWeatherEntry.temperatureLow.toString() + " \u2109"
+            recyclerView_card_tempMax.text = dailyWeatherEntry.temperatureHigh.toString() + " \u2109"
         }
     }
 
     override fun getLayout() = R.layout.recycler_view_list_item
 
     @SuppressLint("SimpleDateFormat")
-    private fun setDate(rawDate: Int): String {
+    private fun setDate(rawDate: Long): String {
         val dateFormat = SimpleDateFormat("MM/dd/yyyy")
         val netDate = Date(rawDate.toLong() * 1000)
         return dateFormat.format(netDate)

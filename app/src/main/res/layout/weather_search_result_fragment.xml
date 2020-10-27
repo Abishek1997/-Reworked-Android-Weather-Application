@@ -48,6 +48,7 @@
         android:id="@+id/card_view_1"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:clickable="true"
         android:layout_gravity="center"
         android:layout_marginStart="10dp"
         android:layout_marginTop="35dp"
@@ -57,6 +58,7 @@
         card_view:layout_constraintEnd_toEndOf="parent"
         card_view:layout_constraintStart_toStartOf="parent"
         card_view:layout_constraintTop_toTopOf="parent">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -65,10 +67,9 @@
                 android:id="@+id/imageView_icon"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:layout_marginStart="40dp"
                 android:layout_marginTop="32dp"
                 android:contentDescription="@string/icon_image"
-                card_view:layout_constraintEnd_toStartOf="@+id/textView_temperature"
-                card_view:layout_constraintHorizontal_bias="0.863"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent" />
 
@@ -76,22 +77,22 @@
                 android:id="@+id/textView_temperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="40dp"
                 android:textColor="#fff"
                 android:textSize="35sp"
-                card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintStart_toEndOf="@+id/imageView_icon"
                 card_view:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/textView_summary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="12dp"
                 android:textColor="#fff"
                 android:textSize="18sp"
-                card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintStart_toEndOf="@+id/imageView_icon"
                 card_view:layout_constraintTop_toBottomOf="@+id/textView_temperature" />
 
             <TextView
@@ -106,10 +107,10 @@
                 card_view:layout_constraintStart_toStartOf="parent" />
 
             <ImageView
-                android:contentDescription="@string/information_icon"
                 android:id="@+id/imageView_information_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/information_icon"
                 android:src="@drawable/information_outline"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintEnd_toEndOf="parent"

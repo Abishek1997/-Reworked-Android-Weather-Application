@@ -5,23 +5,21 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.weatherApp.data.db.daos.CityImagesDAO
 import com.example.weatherApp.data.db.daos.CurrentWeatherDAO
-import com.example.weatherApp.data.db.daos.WeatherLocationDAO
 import com.example.weatherApp.data.db.entities.CurrentWeatherEntity
+import com.example.weatherApp.data.db.entities.ImagesResponseEntity
 import com.example.weatherApp.data.db.entities.LocationEntity
-import com.example.weatherApp.data.db.typeconverters.AlertConverter
-import com.example.weatherApp.data.db.typeconverters.DailyDataTypeConverter
-import com.example.weatherApp.data.db.typeconverters.HourlyDataTypeConverter
-import com.example.weatherApp.data.db.typeconverters.MinutelyDataTypeConverter
+import com.example.weatherApp.data.db.typeconverters.*
 
 @Database(
-    entities = [CurrentWeatherEntity::class, LocationEntity::class],
+    entities = [CurrentWeatherEntity::class, ImagesResponseEntity::class],
     version = 3
 )
-@TypeConverters(DailyDataTypeConverter::class, AlertConverter::class, HourlyDataTypeConverter::class, MinutelyDataTypeConverter::class)
+@TypeConverters(DailyDataTypeConverter::class, AlertConverter::class, HourlyDataTypeConverter::class, MinutelyDataTypeConverter::class, CityImagesConverter::class)
 abstract class WeatherDatabase : RoomDatabase() {
     abstract fun getCurrentWeatherDao(): CurrentWeatherDAO
-    abstract fun getWeatherLocationDao(): WeatherLocationDAO
+    abstract fun getCityImagesDao(): CityImagesDAO
 
     companion object{
         @Volatile private var instance: WeatherDatabase? = null

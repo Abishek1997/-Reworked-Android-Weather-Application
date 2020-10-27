@@ -1,19 +1,24 @@
 package com.example.weatherApp.ui.weatherSearchResult.weatherSearchResult
 
+import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.Weatherapplication.R
 import com.example.weatherApp.data.db.entities.CurrentWeatherEntity
 import com.example.weatherApp.data.network.pojos.DailyData
 import com.example.weatherApp.ui.customcoroutines.ScopedFragment
 import com.example.weatherApp.ui.helpers.RecyclerViewItem
+import com.example.weatherApp.ui.searchResultDetails.SearchResultDetailsActivity
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import kotlinx.android.synthetic.main.activity_weather_search_result.*
 import kotlinx.android.synthetic.main.weather_search_result_fragment.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -27,8 +32,6 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
     private val viewModelFactory: WeatherSearchResultViewModelFactory by instance()
     private lateinit var viewModel: WeatherSearchResultViewModel
 
-    private val currentCity = "Los Angeles, CA, USA"
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,7 +44,10 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(WeatherSearchResultViewModel::class.java)
         bindUI()
-
+        card_view_1.setOnClickListener {
+            val intent = Intent(activity, SearchResultDetailsActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun bindUI() = launch {
@@ -62,9 +68,11 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
 
     private fun getRawData(it: CurrentWeatherEntity){
 
+        val activityToolbarTitle = activity?.toolbar_title
         val city = it.location.city
         textView_city.text = city
-
+        activityToolbarTitle?.text = city
+        activityToolbarTitle?.setTypeface(null, Typeface.BOLD)
         val rawTemperature = it.currently.temperature
         val rawSummary = it.currently.summary
         val rawIcon = it.currently.icon
@@ -76,8 +84,8 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
         val rawPressure = it.currently.pressure
         setUISecondCard(rawHumidity, rawWindSpeed, rawVisibility, rawPressure)
 
-        val rawDailyData = it.daily.data
-        setUIThirdCard(rawDailyData.toRecyclerViewItem())
+        val rawDailyData = it.daily?.data
+        setUIThirdCard(rawDailyData?.toRecyclerViewItem())
     }
 
     private fun List<DailyData>.toRecyclerViewItem(): List<RecyclerViewItem>{
@@ -125,13 +133,21 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
         }
     }
 
-    private fun setUIThirdCard(items: List<RecyclerViewItem>){
+    private fun setUIThirdCard(items: List<RecyclerViewItem>?){
         val groupieAdapter = GroupAdapter<GroupieViewHolder>().apply {
-            addAll(items)
+            if (items != null) {
+                addAll(items)
+            }
         }
         recyclerView.apply{
             layoutManager = LinearLayoutManager(this@WeatherSearchResultFragment.context)
             adapter = groupieAdapter
+        }
+        groupieAdapter.setOnItemClickListener{ item, view ->
+            (item as? RecyclerViewItem).let {
+                val actionToFutureFragment = WeatherSearchResultFragmentDirections.actionFuture(it!!.dailyWeatherEntry.index)
+                Navigation.findNavController(view).navigate(actionToFutureFragment)
+            }
         }
     }
 }

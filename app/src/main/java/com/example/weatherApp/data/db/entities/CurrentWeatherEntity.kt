@@ -14,12 +14,12 @@ data class CurrentWeatherEntity(
     @Embedded(prefix = "currently_")
     val currently: Currently,
     @Embedded(prefix = "daily_")
-    val daily: Daily,
+    val daily: Daily?,
     @Embedded(prefix = "hourly_")
-    val hourly: Hourly,
+    val hourly: Hourly?,
     @Embedded(prefix = "minutely_")
     val minutely: Minutely?,
-    val offset: Double,
+    val offset: Double?,
     @Embedded(prefix = "location_")
     val location: LocationEntity
 )

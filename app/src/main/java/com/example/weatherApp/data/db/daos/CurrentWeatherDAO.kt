@@ -6,9 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.weatherApp.data.db.entities.CurrentWeatherEntity
-import com.example.weatherApp.data.network.pojos.Currently
 import com.example.weatherApp.data.db.entities.PRIMARY_KEY
-import com.example.weatherApp.data.network.pojos.CurrentWeatherResponse
 
 @Dao
 interface CurrentWeatherDAO {
@@ -19,5 +17,5 @@ interface CurrentWeatherDAO {
     fun getCurrentWeatherFromDB(): LiveData<CurrentWeatherEntity>
 
     @Query (value = "Select * from current_weather where id = $PRIMARY_KEY")
-    fun getDataFromDB(): CurrentWeatherEntity
+    fun getDataFromDB(): CurrentWeatherEntity?
 }

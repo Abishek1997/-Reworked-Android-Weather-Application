@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.main.activity_search_result_details.*
 
 class SearchResultDetailsActivity : AppCompatActivity() {
     private lateinit var navController: NavController
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(

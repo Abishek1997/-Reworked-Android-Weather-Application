@@ -19,8 +19,9 @@ data class DailyData(
     val temperatureLow: Double,
     val temperatureMax: Double,
     val temperatureMin: Double,
-    val time: Int,
+    val time: Long,
     val uvIndex: Double,
     val visibility: Double,
-    val windSpeed: Double
+    val windSpeed: Double,
+    val index: Int
 )

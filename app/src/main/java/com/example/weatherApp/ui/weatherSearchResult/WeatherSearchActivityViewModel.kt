@@ -8,5 +8,6 @@ class WeatherSearchActivityViewModel(
 ): ViewModel() {
     suspend fun setQueryToRepository(city: String){
         weatherRepository.getSearchedWeather(city)
+        weatherRepository.getSearchedCityImages(city)
     }
 }

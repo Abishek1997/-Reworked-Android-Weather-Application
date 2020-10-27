@@ -1,6 +1,6 @@
-package com.example.weatherApp.ui.searchResultDetails.todayTab
+package com.example.weatherApp.ui.weatherSearchResult.futureWeather
 
-import android.graphics.Typeface
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.Weatherapplication.R
 import com.example.weatherApp.ui.customcoroutines.ScopedFragment
-import com.example.weatherApp.ui.searchResultDetails.SearchResultDetailsViewModel
-import com.example.weatherApp.ui.searchResultDetails.SearchResultDetailsViewModelFactory
-import kotlinx.android.synthetic.main.activity_search_result_details.*
+import com.example.weatherApp.ui.weatherSearchResult.weatherSearchResult.WeatherSearchResultViewModel
+import com.example.weatherApp.ui.weatherSearchResult.weatherSearchResult.WeatherSearchResultViewModelFactory
 import kotlinx.android.synthetic.main.future_weather_detail_fragment.*
-import kotlinx.android.synthetic.main.weather_search_result_fragment.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
@@ -24,70 +22,66 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
-class TodayTabFragment : ScopedFragment(), KodeinAware {
-    override val kodein by closestKodein()
-    private val viewModelFactory: SearchResultDetailsViewModelFactory by instance()
-    private lateinit var viewModel: SearchResultDetailsViewModel
+class FutureWeatherFragment : ScopedFragment(), KodeinAware {
 
-    companion object {
-        fun newInstance() =
-            TodayTabFragment()
-    }
+    override val kodein by closestKodein()
+    private val viewModelFactory: WeatherSearchResultViewModelFactory by instance()
+    private lateinit var viewModel: WeatherSearchResultViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.today_tab_fragment, container, false)
+        return inflater.inflate(R.layout.future_weather_detail_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory)
-            .get(SearchResultDetailsViewModel::class.java)
-        bindUI()
+
+        val index = arguments?.let { FutureWeatherFragmentArgs.fromBundle(it) }
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory)
+            .get(WeatherSearchResultViewModel::class.java)
+        bindUI(index!!.dayIndex)
     }
-    private fun bindUI() = launch {
-        val currentWeather = viewModel.currentWeather.await()
-        currentWeather.observe(viewLifecycleOwner, Observer{
-            if (it == null) {
-                group_ready.visibility = View.GONE
-                group_loading.visibility = View.VISIBLE
+    private fun bindUI(index: Int) = launch {
+        val futureWeather = viewModel.currentWeather.await()
+        futureWeather.observe(viewLifecycleOwner, Observer {
+            if (it.daily?.data == null){
                 return@Observer
             }
-            val activityToolbar = activity?.toolbarTitle
-            activityToolbar?.text = it.location.city
-            activityToolbar?.setTypeface(null, Typeface.BOLD)
 
-            val windSpeed = it.currently.windSpeed.toString() + " mph"
+            val windSpeed = it.daily.data[index].windSpeed.toString() + " mph"
             value_wind_speed.text = windSpeed
 
-            val precipitation =  String.format("%.4f", it.currently.precipIntensity) + " mmph"
+            val precipitation =  String.format("%.4f", it.daily.data[index].precipIntensity) + " mmph"
             value_precipitation.text = precipitation
 
-            val pressure = it.currently.pressure.toString() + " mb"
+            val pressure = it.daily.data[index].pressure.toString() + " mb"
             value_pressure.text = pressure
 
-            val temperature = it.currently.temperature.toString() + " \u2109"
-            value_temperature_low.text = temperature
+            val temperatureLow = it.daily.data[index].temperatureLow.toString() + " \u2109"
+            value_temperature_low.text = temperatureLow
 
-            setIconFromData(it.currently.icon)
+            Summary.text = it.daily.data[index].summary
 
-            val ozone = it.currently.ozone.toString() + " DU"
-            value_ozone.text = ozone
+            val temperatureHigh = it.daily.data[index].temperatureHigh.toString() + " \u2109"
+            value_ozone.text = temperatureHigh
 
-            val visibility = it.currently.visibility.toString() + " km"
+            val visibility = it.daily.data[index].visibility.toString() + " km"
             value_visibility.text = visibility
 
-            val cloudCover = (it.currently.cloudCover * 100).roundToInt().toString()  + " " + "%"
+            val cloudCover = (it.daily.data[index].cloudCover * 100).roundToInt().toString()  + " " + "%"
             value_cloud_cover.text = cloudCover
 
-            val humidity = (it.currently.humidity * 100).roundToInt().toString() + " " + "%"
+            val humidity = (it.daily.data[index].humidity * 100).roundToInt().toString() + " " + "%"
             value_humidity.text = humidity
 
-            setSunriseAndSunsetTimes(it.daily!!.data[0].sunriseTime, it.daily.data[0].sunsetTime, it.location.timezone)
+            setIconFromData(it.daily.data[index].icon)
+
+            setSunriseAndSunsetTimes(it.daily.data[index].sunriseTime, it.daily.data[index].sunsetTime, it.location.timezone)
         })
     }
+
     private fun setIconFromData(rawIcon: String){
         val imageViewIcon = image_summary
         when (rawIcon) {
@@ -103,13 +97,17 @@ class TodayTabFragment : ScopedFragment(), KodeinAware {
             "partly-cloudy-day" -> imageViewIcon.setImageResource(R.drawable.weather_partly_cloudy)
         }
     }
+
+    @SuppressLint("SimpleDateFormat")
     private fun setSunriseAndSunsetTimes(sunriseEpoch: Int, sunsetEpoch: Int, localTimeZone: String){
 
         val timezoneID = ZoneId.of(localTimeZone)
 
         val sunriseInstant = Instant.ofEpochSecond(sunriseEpoch.toLong())
         val sunriseDatetime = org.threeten.bp.ZonedDateTime.ofInstant(sunriseInstant, timezoneID)
-       
+        val dateFormat = SimpleDateFormat("MM/dd/yyyy")
+        val netDate = Date(sunriseEpoch.toLong() * 1000)
+        date.text = dateFormat.format(netDate)
         val sunriseHour = sunriseDatetime.hour
         val sunriseMinute = sunriseDatetime.minute
         val sunriseTime = String.format("%02d:%02d AM", sunriseHour, sunriseMinute)

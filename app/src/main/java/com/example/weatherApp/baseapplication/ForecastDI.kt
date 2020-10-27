@@ -6,6 +6,7 @@ import com.example.weatherApp.data.network.DarkskyWeatherApiService
 import com.example.weatherApp.data.network.connectivity.*
 import com.example.weatherApp.data.repository.WeatherRepository
 import com.example.weatherApp.data.repository.WeatherRepositoryImpl
+import com.example.weatherApp.ui.searchResultDetails.SearchResultDetailsViewModelFactory
 import com.example.weatherApp.ui.weatherSearchResult.WeatherSearchActivityViewmodelFactory
 import com.example.weatherApp.ui.weatherSearchResult.weatherSearchResult.WeatherSearchResultViewModelFactory
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -26,11 +27,11 @@ class ForecastDI : Application(), KodeinAware {
         bind<ConnectivityInterceptor>() with singleton { ConnectivityInterceptorImpl(instance()) }
         bind() from singleton { DarkskyWeatherApiService(instance()) }
         bind<WeatherNetworkDataSource>() with singleton { WeatherNetworkDataSourceImpl(instance()) }
-        bind<LocationProvider>() with singleton { LocationProviderImpl() }
-        bind() from singleton { instance<WeatherDatabase>().getWeatherLocationDao() }
+        bind() from singleton { instance<WeatherDatabase>().getCityImagesDao() }
         bind<WeatherRepository>() with singleton { WeatherRepositoryImpl(instance(), instance(), instance()) }
         bind() from provider { WeatherSearchResultViewModelFactory(instance()) }
         bind() from provider { WeatherSearchActivityViewmodelFactory(instance()) }
+        bind() from provider { SearchResultDetailsViewModelFactory(instance()) }
     }
 
     override fun onCreate() {

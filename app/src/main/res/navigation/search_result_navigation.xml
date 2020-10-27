@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/search_result_navigation"
+    app:startDestination="@id/weatherSearchResultFragment">
+
+    <fragment
+        android:id="@+id/weatherSearchResultFragment"
+        android:name="com.example.weatherApp.ui.weatherSearchResult.weatherSearchResult.WeatherSearchResultFragment"
+        android:label="weather_search_result_fragment"
+        tools:layout="@layout/weather_search_result_fragment" >
+        <action
+            android:id="@+id/action_future"
+            app:destination="@id/futureWeatherFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/futureWeatherFragment"
+        android:name="com.example.weatherApp.ui.weatherSearchResult.futureWeather.FutureWeatherFragment"
+        android:label="future_weather_fragment"
+        tools:layout="@layout/future_weather_fragment" >
+        <argument
+            android:name="dayIndex"
+            app:argType="integer" />
+    </fragment>
+</navigation>

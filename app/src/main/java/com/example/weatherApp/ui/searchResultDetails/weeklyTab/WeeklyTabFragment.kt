@@ -15,7 +15,6 @@ class WeeklyTabFragment : Fragment() {
             WeeklyTabFragment()
     }
 
-    private lateinit var viewModel: WeeklyTabViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,8 +25,6 @@ class WeeklyTabFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(WeeklyTabViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
 }

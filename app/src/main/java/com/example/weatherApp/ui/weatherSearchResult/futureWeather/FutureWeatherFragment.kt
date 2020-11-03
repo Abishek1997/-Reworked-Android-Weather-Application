@@ -11,6 +11,7 @@ import com.example.Weatherapplication.R
 import com.example.weatherApp.ui.customcoroutines.ScopedFragment
 import com.example.weatherApp.ui.weatherSearchResult.weatherSearchResult.WeatherSearchResultViewModel
 import com.example.weatherApp.ui.weatherSearchResult.weatherSearchResult.WeatherSearchResultViewModelFactory
+import kotlinx.android.synthetic.main.activity_weather_search_result.*
 import kotlinx.android.synthetic.main.future_weather_detail_fragment.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -44,6 +45,9 @@ class FutureWeatherFragment : ScopedFragment(), KodeinAware {
         bindUI(index!!.dayIndex)
     }
     private fun bindUI(index: Int) = launch {
+        val bottomNav = activity?.bottomNav_home
+        bottomNav?.visibility = View.GONE
+
         val futureWeather = viewModel.currentWeather.await()
         futureWeather.observe(viewLifecycleOwner, Observer {
             if (it.daily?.data == null){

@@ -3,6 +3,7 @@ package com.example.weatherApp.data.network
 import com.example.weatherApp.data.db.entities.CurrentWeatherEntity
 import com.example.weatherApp.data.db.entities.ImagesResponseEntity
 import com.example.weatherApp.data.network.connectivity.ConnectivityInterceptor
+import com.example.weatherApp.data.network.pojos.AutocompleteResponse
 import com.example.weatherApp.data.network.pojos.CurrentWeatherResponse
 import com.example.weatherApp.data.network.pojos.ImagesResponse
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
@@ -33,6 +34,11 @@ interface DarkskyWeatherApiService {
     fun getCityImagesAsync(
         @Query(value = "city") city: String
     ): Deferred<ImagesResponseEntity>
+
+    @GET("autoComplete")
+    fun getAutocompleteCitiesAsync(
+        @Query(value = "city") city: String
+    ): Deferred<AutocompleteResponse>
 
     companion object{
         operator fun invoke(

@@ -18,9 +18,18 @@
         android:id="@+id/futureWeatherFragment"
         android:name="com.example.weatherApp.ui.weatherSearchResult.futureWeather.FutureWeatherFragment"
         android:label="future_weather_fragment"
-        tools:layout="@layout/future_weather_fragment" >
+        tools:layout="@layout/future_weather_detail_fragment" >
         <argument
             android:name="dayIndex"
             app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.example.weatherApp.ui.weatherSearchResult.favorites.FavoritesFragment"
+        android:label="favorites_fragment"
+        tools:layout="@layout/favorites_fragment" >
+        <action
+            android:id="@+id/action_current"
+            app:destination="@id/weatherSearchResultFragment" />
     </fragment>
 </navigation>

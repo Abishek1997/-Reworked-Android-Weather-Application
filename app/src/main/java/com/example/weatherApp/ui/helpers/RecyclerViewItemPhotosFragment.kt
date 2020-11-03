@@ -1,6 +1,7 @@
 package com.example.weatherApp.ui.helpers
 import android.annotation.SuppressLint
 import android.content.Context
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.Weatherapplication.R
 import com.example.weatherApp.internal.GlideApp
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -17,6 +18,7 @@ class RecyclerViewItemPhotosFragment(
         viewHolder.apply {
             GlideApp.with(context)
                 .load(imageURL)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(recyclerView_city_image)
         }
     }

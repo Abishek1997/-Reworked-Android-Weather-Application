@@ -7,6 +7,7 @@ import com.example.weatherApp.data.db.entities.CurrentWeatherEntity
 import com.example.weatherApp.data.db.entities.ImagesResponseEntity
 import com.example.weatherApp.data.db.entities.LocationEntity
 import com.example.weatherApp.data.network.connectivity.WeatherNetworkDataSource
+import com.example.weatherApp.data.network.pojos.AutocompleteResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -64,6 +65,14 @@ class WeatherRepositoryImpl(
         }
     }
 
+    override suspend fun getAutocompleteCities(city: String): LiveData<out AutocompleteResponse> {
+        fetchAutocompleteCities(city)
+        return weatherNetworkDataSource.downloadedAutocompleteCities
+    }
+
+    private suspend fun fetchAutocompleteCities(city: String){
+        weatherNetworkDataSource.getAutocompleteCities(city)
+    }
     private suspend fun initFetchSearchedCityImages(city: String){
         fetchSearchedCityImages(city)
     }
@@ -89,7 +98,7 @@ class WeatherRepositoryImpl(
         else{
             val lastLocation: LocationEntity = currentWeatherDAO.getDataFromDB()!!.location
 
-            val lastFetchTimeEpoch: Long = currentWeatherDAO.getDataFromDB()!!.currently!!.time
+            val lastFetchTimeEpoch: Long = currentWeatherDAO.getDataFromDB()!!.currently.time
             val timeInstant = Instant.ofEpochSecond(lastFetchTimeEpoch)
             val timezone = currentWeatherDAO.getDataFromDB()!!.location.timezone
             val zoneID = ZoneId.of(timezone)

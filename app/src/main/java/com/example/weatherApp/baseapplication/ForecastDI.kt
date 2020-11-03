@@ -8,6 +8,7 @@ import com.example.weatherApp.data.repository.WeatherRepository
 import com.example.weatherApp.data.repository.WeatherRepositoryImpl
 import com.example.weatherApp.ui.searchResultDetails.SearchResultDetailsViewModelFactory
 import com.example.weatherApp.ui.weatherSearchResult.WeatherSearchActivityViewmodelFactory
+import com.example.weatherApp.ui.weatherSearchResult.favorites.FavoritesViewModelFactory
 import com.example.weatherApp.ui.weatherSearchResult.weatherSearchResult.WeatherSearchResultViewModelFactory
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.kodein.di.Kodein
@@ -32,6 +33,7 @@ class ForecastDI : Application(), KodeinAware {
         bind() from provider { WeatherSearchResultViewModelFactory(instance()) }
         bind() from provider { WeatherSearchActivityViewmodelFactory(instance()) }
         bind() from provider { SearchResultDetailsViewModelFactory(instance()) }
+        bind() from provider { FavoritesViewModelFactory(instance())}
     }
 
     override fun onCreate() {

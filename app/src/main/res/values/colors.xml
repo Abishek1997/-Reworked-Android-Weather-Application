@@ -13,4 +13,5 @@
     <color name="color_text_fill_highest_opacity">#ffffff</color>
     <color name="color_fill_white">#fff</color>
     <color name="color_dark_card">#1C1C1C</color>
+    <color name="color_selected_red">#E03131</color>
 </resources>

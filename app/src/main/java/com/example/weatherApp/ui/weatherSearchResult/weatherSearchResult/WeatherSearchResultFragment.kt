@@ -1,11 +1,18 @@
 package com.example.weatherApp.ui.weatherSearchResult.weatherSearchResult
 
+import android.content.Context
 import android.content.Intent
-import android.graphics.Typeface
+import android.content.SharedPreferences
+import android.graphics.*
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -16,6 +23,7 @@ import com.example.weatherApp.data.network.pojos.DailyData
 import com.example.weatherApp.ui.customcoroutines.ScopedFragment
 import com.example.weatherApp.ui.helpers.RecyclerViewItem
 import com.example.weatherApp.ui.searchResultDetails.SearchResultDetailsActivity
+import com.example.weatherApp.ui.weatherSearchResult.futureWeather.FutureWeatherFragmentArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import kotlinx.android.synthetic.main.activity_weather_search_result.*
@@ -26,16 +34,21 @@ import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 import kotlin.math.roundToInt
 
+//FIXME: Fix initial call. Do not call every time you switch back between fragment views.
+
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
     override val kodein by closestKodein()
     private val viewModelFactory: WeatherSearchResultViewModelFactory by instance()
     private lateinit var viewModel: WeatherSearchResultViewModel
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        sharedPreferences = requireContext().getSharedPreferences("Favorites", Context.MODE_PRIVATE)
         return inflater.inflate(R.layout.weather_search_result_fragment, container, false)
     }
 
@@ -51,8 +64,22 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
     }
 
     private fun bindUI() = launch {
-        val currentWeather = viewModel.currentWeather.await()
 
+        val toolBar = activity?.toolbar
+        toolBar?.visibility = View.VISIBLE
+        lateinit var currentWeather: LiveData<out CurrentWeatherEntity>
+
+        val bottomNav = activity?.bottomNav_home
+        bottomNav?.visibility = View.VISIBLE
+        if (! sharedPreferences.contains("initData")){
+            currentWeather = viewModel.currentWeather.await()
+            editor = sharedPreferences.edit()
+            editor.putString("initData", "available")
+            editor.apply()
+        }
+        else{
+            currentWeather = viewModel.getWeatherData()
+        }
         currentWeather.observe(viewLifecycleOwner, Observer {
             if (it == null) {
                 group_ready.visibility = View.GONE
@@ -60,9 +87,15 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
                 return@Observer
             }
 
+            if (it.location.latitude == 34.04563903808594 && it.location.longitude == -118.24163818359375)
+                floatingActionButton.visibility = View.GONE
+            else
+                floatingActionButton.visibility = View.VISIBLE
+
             group_loading.visibility = View.GONE
             group_ready.visibility = View.VISIBLE
             getRawData(it)
+            setSharedPreferences(it)
         })
     }
 
@@ -150,4 +183,36 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
             }
         }
     }
+
+    private fun setSharedPreferences(weatherEntity: CurrentWeatherEntity){
+        if (sharedPreferences.contains(weatherEntity.location.city)){
+            floatingActionButton.setImageResource(R.drawable.map_minus_icon)
+        }else{
+            floatingActionButton.setImageResource(R.drawable.map_plus_icon)
+        }
+
+        floatingActionButton.setOnClickListener {
+            editor = sharedPreferences.edit()
+            if (! sharedPreferences.contains(weatherEntity.location.city)){
+                val toast = Toast.makeText(
+                    context,
+                    "${weatherEntity.location.city} was added to favorites", Toast.LENGTH_SHORT
+                )
+                toast.show()
+                editor.putString(weatherEntity.location.city, weatherEntity.location.city)
+                floatingActionButton.setImageResource(R.drawable.map_minus_icon)
+            }else{
+                val toast: Toast = Toast.makeText(
+                    context,
+                    weatherEntity.location.city + " was removed from favorites",
+                    Toast.LENGTH_SHORT
+                )
+                toast.show()
+                editor.remove(weatherEntity.location.city)
+                floatingActionButton.setImageResource(R.drawable.map_plus_icon)
+            }
+            editor.apply()
+        }
+    }
+
 }

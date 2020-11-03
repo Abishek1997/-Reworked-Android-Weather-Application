@@ -2,16 +2,29 @@ package com.example.weatherApp.ui.weatherSearchResult
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
+import android.database.Cursor
+import android.database.MatrixCursor
 import android.os.Bundle
+import android.provider.BaseColumns
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.cursoradapter.widget.CursorAdapter
+import androidx.cursoradapter.widget.SimpleCursorAdapter
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
 import com.example.Weatherapplication.R
-import com.example.weatherApp.ui.weatherSearchResult.weatherSearchResult.WeatherSearchResultViewModel
-import com.example.weatherApp.ui.weatherSearchResult.weatherSearchResult.WeatherSearchResultViewModelFactory
 import kotlinx.android.synthetic.main.activity_search_result_details.*
+import kotlinx.android.synthetic.main.activity_search_result_details.toolbar
+import kotlinx.android.synthetic.main.activity_weather_search_result.*
 import kotlinx.coroutines.runBlocking
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -24,6 +37,9 @@ class WeatherSearchResultActivity : AppCompatActivity(), KodeinAware{
     override val kodein by closestKodein()
     private val viewModelFactory: WeatherSearchActivityViewmodelFactory by instance()
     private lateinit var viewModel: WeatherSearchActivityViewModel
+    private lateinit var navController: NavController
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,10 +48,19 @@ class WeatherSearchResultActivity : AppCompatActivity(), KodeinAware{
             AppCompatDelegate.MODE_NIGHT_YES
         )
         setSupportActionBar(toolbar)
+        sharedPreferences = applicationContext.getSharedPreferences("Favorites", Context.MODE_PRIVATE)
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_search)
+        bottomNav_home.setupWithNavController(navController)
+        NavigationUI.setupActionBarWithNavController(this, navController)
 
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(WeatherSearchActivityViewModel::class.java)
     }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return NavigationUI.navigateUp(navController, null)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.search_menu_item, menu)
 
@@ -44,7 +69,13 @@ class WeatherSearchResultActivity : AppCompatActivity(), KodeinAware{
         val searchView = searchItem?.actionView as SearchView
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-
+        val suggestionAdapter: CursorAdapter = SimpleCursorAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            null, arrayOf(SearchManager.SUGGEST_COLUMN_TEXT_1), intArrayOf(android.R.id.text1),
+            0
+        )
+        searchView.suggestionsAdapter = suggestionAdapter
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 runBlocking {
@@ -57,10 +88,55 @@ class WeatherSearchResultActivity : AppCompatActivity(), KodeinAware{
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    val sAutocompleteColNames = arrayOf(
+                        BaseColumns._ID,
+                        SearchManager.SUGGEST_COLUMN_TEXT_1
+                    )
+                    if (newText.isNotEmpty()) {
+                        runBlocking {
+                            viewModel.getAutocompleteCitiesByQuery(newText).observe(
+                                this@WeatherSearchResultActivity,
+                                Observer { data ->
+                                    val cursor = MatrixCursor(sAutocompleteColNames)
+                                    for (index in data.predictions.indices) {
+                                        val term: String = data.predictions[index]
+                                        val row = arrayOf<Any>(index, term)
+                                        cursor.addRow(row)
+                                    }
+                                    searchView.suggestionsAdapter.changeCursor(cursor)
+                                })
+                        }
+
+                    } else {
+                        searchView.suggestionsAdapter.changeCursor(null)
+                    }
+                }
                 return false
             }
         })
+        searchView.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
+            override fun onSuggestionSelect(position: Int): Boolean {
+                val cursor: Cursor = searchView.suggestionsAdapter.getItem(position) as Cursor
+                val term: String =
+                    cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_1))
+                cursor.close()
+                searchView.setQuery(term, false)
+                return true
+            }
+
+            override fun onSuggestionClick(position: Int): Boolean {
+                return onSuggestionSelect(position)
+            }
+        })
         return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        editor = sharedPreferences.edit()
+        editor.remove("initData")
+        editor.apply()
     }
 
 }

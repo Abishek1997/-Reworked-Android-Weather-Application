@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AppTheme">
+        <attr name="primaryTextColor" format="color"/>
+        <attr name="secondaryTextColor" format="color"/>
+        <attr name="backgroundCardColor" format="color"/>
+        <attr name="backgroundActivityColor" format="color"/>
+        <attr name="iconFillColor" format="color"/>
+        <attr name="iconWeatherFillColor" format="color"/>
+        <attr name="iconSunnyFillColor" format="color"/>
+        <attr name="iconFillSearch" format="color"/>
+        <attr name="backgroundCardSecondaryColor" format="color"/>
+        <attr name="floatingActionButtonColor" format="color"/>
+    </declare-styleable>
+</resources>

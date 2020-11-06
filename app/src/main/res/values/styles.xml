@@ -1,20 +1,69 @@
 <resources>
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+<!--    &lt;!&ndash; Base application theme. &ndash;&gt;-->
+<!--    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">-->
+<!--        &lt;!&ndash; Customize your theme here. &ndash;&gt;-->
+<!--        <item name="colorPrimary">@color/colorPrimary</item>-->
+<!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+<!--        <item name="colorAccent">@color/colorAccent</item>-->
 
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+<!--        <item name="windowActionBar">false</item>-->
+<!--        <item name="windowNoTitle">true</item>-->
 
+<!--    </style>-->
+
+    <style name="ToolbarThemeDark">
+        <item name="android:background">@color/toolbar_background</item>
+        <item name="android:textColorPrimary">@color/toolbar_title_color</item>
+        <item name="android:textColorSecondary">@color/toolbar_subtitle_color</item>
     </style>
 
-    <style name="ToolbarTheme">
-        <item name="android:background"> #1E1E1E </item>
-        <item name="android:textColorPrimary"> #EEEEEE </item>
-        <item name="android:textColorSecondary"> #FFFFFF </item>
+    <style name="ToolbarThemeLight">
+        <item name="android:background">@color/toolbar_background_light</item>
+        <item name="android:textColorPrimary">@color/toolbar_title_color_light</item>
+        <item name="android:textColorSecondary">@color/toolbar_subtitle_color_light</item>
+    </style>
+
+    <style name="Theme.AppCompat.DayNight" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="primaryTextColor">@color/color_text_fill_highest_opacity</item>
+        <item name="secondaryTextColor">@color/color_text_fill_lowest_opacity</item>
+        <item name="backgroundCardColor">@color/card_bg_color</item>
+        <item name="iconFillColor">@color/color_fill_param_icons</item>
+        <item name="iconWeatherFillColor">@color/color_fill_weather_icon</item>
+        <item name="iconSunnyFillColor">@color/color_fill_sunny_icon</item>
+        <item name="iconFillSearch">@color/color_fill_weather_icon</item>
+        <item name="colorPrimary">@color/color_fill_param_icons</item>
+        <item name="android:textColorSecondary">@color/color_fill_weather_icon</item>
+        <item name="backgroundCardSecondaryColor">@color/cardview_dark_background</item>
+        <item name="floatingActionButtonColor">@color/fab_color_dark</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+    </style>
+
+    <style name="ActivityThemeDark" parent="Theme.AppCompat.DayNight">
+        <item name="backgroundActivityColor">@color/color_black_bg</item>
+    </style>
+
+    <style name="Theme.AppCompat.Day" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="primaryTextColor">@color/color_black_bg</item>
+        <item name="secondaryTextColor">@color/card_bg_color</item>
+        <item name="backgroundCardColor">@color/color_fill_white</item>
+        <item name="iconFillColor">@color/colorPrimaryDark</item>
+        <item name="iconWeatherFillColor">@color/card_bg_color</item>
+        <item name="iconSunnyFillColor">@color/color_fill_sunny_light</item>
+        <item name="iconFillSearch">@color/color_black_bg</item>
+        <item name="colorPrimary">@color/color_fill_param_icons</item>
+        <item name="android:textColorSecondary">@color/card_bg_color</item>
+        <item name="backgroundCardSecondaryColor">@color/cardview_dark_background</item>
+        <item name="floatingActionButtonColor">@color/fab_color_light</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+    </style>
+
+    <style name="ActivityLightTheme" parent="Theme.AppCompat.Day">
+        <item name="backgroundActivityColor">@color/color_fill_white</item>
+    </style>
+
+    <style name="WindowAnimationTransition">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
 
 </resources>

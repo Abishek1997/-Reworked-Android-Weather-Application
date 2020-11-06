@@ -1,8 +1,8 @@
 package com.example.weatherApp.ui.weatherSearchResult
 
+import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.database.Cursor
 import android.database.MatrixCursor
@@ -12,6 +12,7 @@ import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
+import androidx.core.app.ActivityCompat.recreate
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.cursoradapter.widget.CursorAdapter
 import androidx.cursoradapter.widget.SimpleCursorAdapter
@@ -40,14 +41,18 @@ class WeatherSearchResultActivity : AppCompatActivity(), KodeinAware{
     private lateinit var viewModel: WeatherSearchActivityViewModel
     private lateinit var navController: NavController
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var themeSharedPreferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        themeSharedPreferences = applicationContext.getSharedPreferences("Theme", Context.MODE_PRIVATE)
+        if (themeSharedPreferences.getString("theme", String()) == "light"){
+            setTheme(R.style.ActivityLightTheme)
+        } else{
+            setTheme(R.style.ActivityThemeDark)
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_weather_search_result)
-        AppCompatDelegate.setDefaultNightMode(
-            AppCompatDelegate.MODE_NIGHT_YES
-        )
         setSupportActionBar(toolbar)
         sharedPreferences = applicationContext.getSharedPreferences("Favorites", Context.MODE_PRIVATE)
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_search)

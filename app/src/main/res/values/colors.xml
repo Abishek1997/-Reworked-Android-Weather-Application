@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorPrimaryDark">#7E57C2</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="color_black_bg">#000000</color>
     <color name="card_bg_color">#1D1D1D</color>
     <color name="color_fill_weather_icon">#f1f1f1</color>
     <color name="color_fill_sunny_icon">#FFFF00</color>
+    <color name="color_fill_sunny_light">#FFC107</color>
     <color name="color_fill_information_icon">#959595</color>
     <color name="color_fill_param_icons">#BB86FC</color>
     <color name="color_text_fill_lowest_opacity">#858585</color>
@@ -14,4 +15,13 @@
     <color name="color_fill_white">#fff</color>
     <color name="color_dark_card">#1C1C1C</color>
     <color name="color_selected_red">#E03131</color>
+    <color name="toolbar_background">#1E1E1E</color>
+    <color name="toolbar_title_color">#EEEEEE</color>
+    <color name="toolbar_subtitle_color">#FFFFFF</color>
+    <color name="toolbar_background_light">#6200EE</color>
+    <color name="toolbar_title_color_light">#1E1E1E</color>
+    <color name="toolbar_subtitle_color_light">#000000</color>
+    <color name="color_white_lesser_opacity">#FFFFEE</color>
+    <color name="fab_color_dark">#E53935</color>
+    <color name="fab_color_light">#FF5252</color>
 </resources>

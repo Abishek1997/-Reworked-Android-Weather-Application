@@ -93,12 +93,14 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:17.1.0"
 
     // Glide
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
-    kapt 'com.github.bumptech.glide:compiler:4.11.0'
+    def glide_version = "4.11.0"
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
+    kapt "com.github.bumptech.glide:compiler:$glide_version"
 
     // Material Design
     implementation 'com.google.android.material:material:1.2.1'
+
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -114,5 +116,11 @@ dependencies {
     implementation "com.xwray:groupie:$groupie_version"
     implementation "com.xwray:groupie-kotlin-android-extensions:$groupie_version"
 
+    //Android mpCharts
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    //Design Support
+    def preference_version= "1.1.1"
+    implementation "androidx.preference:preference-ktx:$preference_version"
+
 }

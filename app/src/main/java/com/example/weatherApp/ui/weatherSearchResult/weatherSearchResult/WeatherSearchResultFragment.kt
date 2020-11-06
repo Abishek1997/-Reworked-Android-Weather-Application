@@ -34,8 +34,6 @@ import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 import kotlin.math.roundToInt
 
-//FIXME: Fix initial call. Do not call every time you switch back between fragment views.
-
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
     override val kodein by closestKodein()
@@ -130,7 +128,13 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
 
         val temperature = rawTemperature.roundToInt().toString() + getString(R.string.degree_fahrenheit)
         textView_temperature.text = temperature
-        textView_summary.text = rawSummary
+        val summary: String
+        if (rawSummary.length > 20){
+            summary = (rawSummary.subSequence(0, 20) as String) + "-\n" + (rawSummary.subSequence(20, rawSummary.length))
+        } else{
+            summary = rawSummary
+        }
+        textView_summary.text = summary
         setIconFromData(rawIcon)
     }
 

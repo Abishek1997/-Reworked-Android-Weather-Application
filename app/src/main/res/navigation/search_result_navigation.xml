@@ -32,4 +32,9 @@
             android:id="@+id/action_current"
             app:destination="@id/weatherSearchResultFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.weatherApp.ui.weatherSearchResult.settings.SettingsFragment"
+        android:label="settings_fragment"
+        tools:layout="@layout/settings_fragment" />
 </navigation>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Temperature unit preference">
+        <SwitchPreference
+            android:key="USE_CELCIUS"
+            android:title="Use Celcius (&#xb0;C)"
+            android:summary="Switch to see temperatures in Celcius"
+            android:defaultValue="false">
+        </SwitchPreference>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Switch themes">
+        <SwitchPreference
+            android:key="SWITCH_THEME"
+            android:title="Dark theme"
+            android:summary="Switch to toggle between dark and light theme"
+            android:defaultValue="true">
+        </SwitchPreference>
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

@@ -22,6 +22,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.example.Weatherapplication.R
+import com.example.weatherApp.ui.weatherSearchResult.weatherSearchResult.WeatherSearchResultFragmentDirections
 import kotlinx.android.synthetic.main.activity_search_result_details.*
 import kotlinx.android.synthetic.main.activity_search_result_details.toolbar
 import kotlinx.android.synthetic.main.activity_weather_search_result.*

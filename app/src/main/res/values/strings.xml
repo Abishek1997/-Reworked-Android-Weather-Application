@@ -41,4 +41,5 @@
     <string name="favorites">Favorites</string>
     <string name="favorites_tab">FAVORITES</string>
     <string name="mark_unmark_as_favorites">Mark/Unmark as Favorites</string>
+    <string name="settings">Settings</string>
 </resources>

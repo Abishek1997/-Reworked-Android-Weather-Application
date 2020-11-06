@@ -51,14 +51,15 @@ class FavoritesFragment : ScopedFragment(), FavoritesRecyclerView.AdapterListene
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(FavoritesViewModel::class.java)
-        favorites_text.setTypeface(null, Typeface.BOLD)
         bindUI()
     }
 
     private fun bindUI() = launch{
         val allEntries: Map<String?, *> = sharedPreferences.all
-        val activityToolbarText = activity?.toolbar_title
-        activityToolbarText!!.visibility = View.GONE
+
+        val title = "Favorites"
+        activity?.toolbar_title?.text = title
+        activity?.toolbar_title?.setTypeface(null, Typeface.BOLD)
 
         for (key in allEntries.keys) {
             if (key != "initData"){

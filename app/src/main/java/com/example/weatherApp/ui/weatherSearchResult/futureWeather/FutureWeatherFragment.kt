@@ -1,6 +1,8 @@
 package com.example.weatherApp.ui.weatherSearchResult.futureWeather
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -29,6 +31,7 @@ class FutureWeatherFragment : ScopedFragment(), KodeinAware {
     override val kodein by closestKodein()
     private val viewModelFactory: WeatherSearchResultViewModelFactory by instance()
     private lateinit var viewModel: WeatherSearchResultViewModel
+    private lateinit var temperatureSharedPreferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +44,8 @@ class FutureWeatherFragment : ScopedFragment(), KodeinAware {
         super.onActivityCreated(savedInstanceState)
 
         val index = arguments?.let { FutureWeatherFragmentArgs.fromBundle(it) }
+        temperatureSharedPreferences = requireContext().getSharedPreferences("Theme", Context.MODE_PRIVATE)
+
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory)
             .get(WeatherSearchResultViewModel::class.java)
         bindUI(index!!.dayIndex)
@@ -64,12 +69,23 @@ class FutureWeatherFragment : ScopedFragment(), KodeinAware {
             val pressure = it.daily.data[index].pressure.toString() + " mb"
             value_pressure.text = pressure
 
-            val temperatureLow = it.daily.data[index].temperatureLow.toString() + " \u2109"
+            val temperatureLow: String = if (temperatureSharedPreferences.getString("temperatureUnit", String()) == "celcius"){
+                ((it.daily.data[index].temperatureLow - 32) * 0.55).toInt().toString() + " \u2103"
+            } else{
+                it.daily.data[index].temperatureLow.roundToInt().toString() + " \u2109"
+            }
+
+
+
             value_temperature_low.text = temperatureLow
 
             Summary.text = it.daily.data[index].summary
 
-            val temperatureHigh = it.daily.data[index].temperatureHigh.toString() + " \u2109"
+            val temperatureHigh: String = if (temperatureSharedPreferences.getString("temperatureUnit", String()) == "celcius"){
+                ((it.daily.data[index].temperatureHigh - 32) * 0.55).toInt().toString() + " \u2103"
+            } else{
+                it.daily.data[index].temperatureHigh.roundToInt().toString() + " \u2109"
+            }
             value_ozone.text = temperatureHigh
 
             val visibility = it.daily.data[index].visibility.toString() + " km"

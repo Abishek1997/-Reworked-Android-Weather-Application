@@ -24,4 +24,5 @@
     <color name="color_white_lesser_opacity">#FFFFEE</color>
     <color name="fab_color_dark">#E53935</color>
     <color name="fab_color_light">#FF5252</color>
+    <color name="error_text">#B71C1C</color>
 </resources>

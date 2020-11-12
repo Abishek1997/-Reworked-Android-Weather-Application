@@ -35,9 +35,9 @@
 
             <ImageView
                 android:id="@+id/image_sunrise"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginTop="10dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="5dp"
                 android:contentDescription="@string/sunrise_time"
                 android:src="@drawable/sunrise_icon"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -88,9 +88,9 @@
 
             <ImageView
                 android:id="@+id/image_sunset"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginTop="10dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="5dp"
                 android:contentDescription="@string/sunset_time"
                 android:src="@drawable/sunset_icon"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -128,7 +128,7 @@
         android:layout_width="125dp"
         android:layout_height="140dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         app:cardBackgroundColor="?attr/backgroundCardColor"
         app:cardCornerRadius="10dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -140,9 +140,9 @@
 
             <ImageView
                 android:id="@+id/image_wind_speed"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginTop="10dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="5dp"
                 android:contentDescription="@string/wind_speed"
                 android:src="@drawable/wind_icon"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -181,7 +181,7 @@
         android:id="@+id/card_precipitation"
         android:layout_width="125dp"
         android:layout_height="140dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         app:cardBackgroundColor="?attr/backgroundCardColor"
         app:cardCornerRadius="10dp"
         app:layout_constraintEnd_toStartOf="@+id/card_pressure"
@@ -194,9 +194,9 @@
 
             <ImageView
                 android:id="@+id/image_precipitation"
-                android:layout_width="80dp"
+                android:layout_width="70dp"
                 android:layout_height="80dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:contentDescription="@string/precipitation"
                 android:src="@drawable/precipitation_icon"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -233,7 +233,7 @@
         android:id="@+id/card_pressure"
         android:layout_width="125dp"
         android:layout_height="140dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="10dp"
         app:cardBackgroundColor="?attr/backgroundCardColor"
         app:cardCornerRadius="10dp"
@@ -246,9 +246,9 @@
 
             <ImageView
                 android:id="@+id/image_pressure"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginTop="10dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="5dp"
                 android:contentDescription="@string/pressure"
                 android:src="@drawable/pressure_icon"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -286,7 +286,7 @@
         android:layout_width="125dp"
         android:layout_height="140dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         app:cardBackgroundColor="?attr/backgroundCardColor"
         app:cardCornerRadius="10dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -298,12 +298,13 @@
 
             <ImageView
                 android:id="@+id/image_temperature_low"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginTop="10dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="5dp"
                 android:contentDescription="@string/temperature_low"
                 android:src="@drawable/temperature_low"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.49"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -337,7 +338,7 @@
         android:id="@+id/card_summary"
         android:layout_width="125dp"
         android:layout_height="140dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         app:cardBackgroundColor="?attr/backgroundCardColor"
         app:cardCornerRadius="10dp"
         app:layout_constraintEnd_toStartOf="@+id/card_ozone"
@@ -350,14 +351,14 @@
 
             <ImageView
                 android:id="@+id/image_summary"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginBottom="12dp"
                 android:contentDescription="@string/summary"
                 android:src="@drawable/weather_sunny"
-                app:layout_constraintBottom_toTopOf="@+id/text_summary"
+                app:layout_constraintBottom_toTopOf="@+id/value_summary"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/value_summary"
@@ -367,8 +368,7 @@
                 android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@+id/text_summary"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_summary" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/text_summary"
@@ -389,7 +389,7 @@
         android:id="@+id/card_ozone"
         android:layout_width="125dp"
         android:layout_height="140dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="10dp"
         app:cardBackgroundColor="?attr/backgroundCardColor"
         app:cardCornerRadius="10dp"
@@ -402,9 +402,9 @@
 
             <ImageView
                 android:id="@+id/image_ozone"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginTop="10dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="5dp"
                 android:contentDescription="@string/temperature_high"
                 android:src="@drawable/temperature_high"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -442,7 +442,7 @@
         android:layout_width="125dp"
         android:layout_height="140dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         app:cardBackgroundColor="?attr/backgroundCardColor"
         app:cardCornerRadius="10dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -454,9 +454,9 @@
 
             <ImageView
                 android:id="@+id/image_visibility"
-                android:layout_width="80dp"
+                android:layout_width="70dp"
                 android:layout_height="80dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:contentDescription="@string/visibility"
                 android:src="@drawable/visibility_icon"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -492,7 +492,7 @@
         android:id="@+id/card_cloud_cover"
         android:layout_width="125dp"
         android:layout_height="140dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         app:cardBackgroundColor="?attr/backgroundCardColor"
         app:cardCornerRadius="10dp"
         app:layout_constraintEnd_toStartOf="@+id/card_humidity"
@@ -505,9 +505,9 @@
 
             <ImageView
                 android:id="@+id/image_cloud_cover"
-                android:layout_width="80dp"
+                android:layout_width="70dp"
                 android:layout_height="80dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:contentDescription="@string/cloud_cover"
                 android:src="@drawable/cloud_cover_icon"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -544,7 +544,7 @@
         android:id="@+id/card_humidity"
         android:layout_width="125dp"
         android:layout_height="140dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="10dp"
         app:cardBackgroundColor="?attr/backgroundCardColor"
         app:cardCornerRadius="10dp"
@@ -557,9 +557,9 @@
 
             <ImageView
                 android:id="@+id/image_humidity"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginTop="10dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="5dp"
                 android:contentDescription="@string/humidity"
                 android:src="@drawable/humidity_icon"
                 app:layout_constraintEnd_toEndOf="parent"

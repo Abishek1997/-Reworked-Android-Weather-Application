@@ -5,6 +5,7 @@
       <w>cardview</w>
       <w>celcius</w>
       <w>darksky</w>
+      <w>geocoder</w>
       <w>gson</w>
       <w>kodein</w>
       <w>mmph</w>

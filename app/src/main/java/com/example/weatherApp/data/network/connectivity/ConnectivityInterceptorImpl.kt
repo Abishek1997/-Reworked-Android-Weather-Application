@@ -18,7 +18,7 @@ class ConnectivityInterceptorImpl( context: Context) : ConnectivityInterceptor {
     }
     @Suppress("DEPRECATION")
     @SuppressLint("ObsoleteSdkInt")
-    private fun isOnline(): Boolean{
+    override fun isOnline(): Boolean{
         val connectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val currentNetwork = connectivityManager.activeNetwork ?: return false

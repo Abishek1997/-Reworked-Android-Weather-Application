@@ -1,6 +1,7 @@
 package com.example.weatherApp.data.network.connectivity
 
-import android.util.Log
+import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.weatherApp.data.db.entities.CurrentWeatherEntity
@@ -32,7 +33,6 @@ class WeatherNetworkDataSourceImpl(
             _downloadedCurrentWeather.postValue(fetchCurrentWeather)
         }
         catch (e: NoConnectivityException){
-            Log.e("Connectivity", "No internet connection", e)
         }
     }
     override suspend fun fetchSearchedWeather(city: String) {
@@ -42,7 +42,6 @@ class WeatherNetworkDataSourceImpl(
             _downloadedCurrentWeather.postValue(fetchSearchedWeather)
         }
         catch (e: NoConnectivityException){
-            Log.e("Connectivity", "No internet connection", e)
         }
     }
 
@@ -53,7 +52,6 @@ class WeatherNetworkDataSourceImpl(
             _downloadedCityImages.postValue(fetchCityImages)
         }
         catch (e: NoConnectivityException){
-            Log.e("Connectivity", "No internet connection", e)
         }
     }
 
@@ -64,7 +62,7 @@ class WeatherNetworkDataSourceImpl(
             _downloadedAutocompleteCities.postValue(fetchAutocompleteCities)
         }
         catch (e: NoConnectivityException){
-            Log.e("Connectivity", "No internet connection", e)
         }
     }
+
 }

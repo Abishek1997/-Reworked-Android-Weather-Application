@@ -1,5 +1,7 @@
 package com.example.weatherApp.ui.searchResultDetails.todayTab
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -28,6 +30,7 @@ class TodayTabFragment : ScopedFragment(), KodeinAware {
     override val kodein by closestKodein()
     private val viewModelFactory: SearchResultDetailsViewModelFactory by instance()
     private lateinit var viewModel: SearchResultDetailsViewModel
+    private lateinit var temperatureSharedPreferences: SharedPreferences
 
     companion object {
         fun newInstance() =
@@ -45,6 +48,7 @@ class TodayTabFragment : ScopedFragment(), KodeinAware {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(SearchResultDetailsViewModel::class.java)
+        temperatureSharedPreferences = requireContext().getSharedPreferences("Theme", Context.MODE_PRIVATE)
         bindUI()
     }
     private fun bindUI() = launch {
@@ -68,7 +72,11 @@ class TodayTabFragment : ScopedFragment(), KodeinAware {
             val pressure = it.currently.pressure.toString() + " mb"
             value_pressure.text = pressure
 
-            val temperature = it.currently.temperature.toString() + " \u2109"
+            val temperature: String = if (temperatureSharedPreferences.getString("temperatureUnit", String()) == "celcius"){
+                ((it.currently.temperature - 32) * 0.55).toInt().toString() + getString(R.string.degree_celcius)
+            } else{
+                it.currently.temperature.roundToInt().toString() + getString(R.string.degree_fahrenheit)
+            }
             value_temperature_low.text = temperature
 
             setIconFromData(it.currently.icon)

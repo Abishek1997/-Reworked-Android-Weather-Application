@@ -1,5 +1,7 @@
 package com.example.weatherApp.ui.searchResultDetails.weeklyTab
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,10 +23,13 @@ import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
+import kotlin.math.roundToInt
 
 class WeeklyTabFragment : ScopedFragment(), KodeinAware{
     override val kodein by closestKodein()
     private val viewModelFactory: SearchResultDetailsViewModelFactory by instance()
+
+    private lateinit var temperatureSharedPreferences: SharedPreferences
     private lateinit var viewModel: SearchResultDetailsViewModel
 
     companion object {
@@ -44,6 +49,7 @@ class WeeklyTabFragment : ScopedFragment(), KodeinAware{
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(SearchResultDetailsViewModel::class.java)
+        temperatureSharedPreferences = requireContext().getSharedPreferences("Theme", Context.MODE_PRIVATE)
         bindUI()
     }
     private fun bindUI() = launch {
@@ -57,9 +63,18 @@ class WeeklyTabFragment : ScopedFragment(), KodeinAware{
                 group_loading.visibility = View.VISIBLE
                 return@Observer
             }
-            data.daily!!.data.forEachIndexed { index, dailyData ->
-                temperatureLow.add(Entry(index.toFloat(), dailyData.temperatureLow.toFloat()))
-                temperatureHigh.add(Entry(index.toFloat(), dailyData.temperatureHigh.toFloat()))
+
+            if (temperatureSharedPreferences.getString("temperatureUnit", String()) == "celcius"){
+                data.daily!!.data.forEachIndexed { index, dailyData ->
+                    temperatureLow.add(Entry(index.toFloat(), ((dailyData.temperatureLow - 32) * (0.55)).toFloat()))
+                    temperatureHigh.add(Entry(index.toFloat(), ((dailyData.temperatureHigh - 32) * (0.55)).toFloat()))
+                }
+
+            } else{
+                data.daily!!.data.forEachIndexed { index, dailyData ->
+                    temperatureLow.add(Entry(index.toFloat(), dailyData.temperatureLow.toFloat()))
+                    temperatureHigh.add(Entry(index.toFloat(), dailyData.temperatureHigh.toFloat()))
+                }
             }
 
             weekly_summary_text.text = data.daily.summary
@@ -69,8 +84,19 @@ class WeeklyTabFragment : ScopedFragment(), KodeinAware{
     }
 
     private fun setChartUI(temperatureLow: ArrayList<Entry>, temperatureHigh: ArrayList<Entry>){
-        val temperatureLowLData = LineDataSet(temperatureLow, "Minimum Temperature")
-        val temperatureHighData = LineDataSet(temperatureHigh, "Minimum Temperature")
+        val temperatureLowString: String = if (temperatureSharedPreferences.getString("temperatureUnit", String()) == "celcius"){
+            "Minimum Temperature" + getString(R.string.degree_celcius)
+        } else{
+            "Minimum Temperature" + getString(R.string.degree_fahrenheit)
+        }
+
+        val temperatureHighString: String = if (temperatureSharedPreferences.getString("temperatureUnit", String()) == "celcius"){
+            "Maximum Temperature" + getString(R.string.degree_celcius)
+        } else{
+            "Maximum Temperature" + getString(R.string.degree_fahrenheit)
+        }
+        val temperatureLowLData = LineDataSet(temperatureLow, temperatureLowString)
+        val temperatureHighData = LineDataSet(temperatureHigh, temperatureHighString)
 
         val lineDataSets = ArrayList<ILineDataSet>()
 

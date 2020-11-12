@@ -10,7 +10,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/weekly_summary"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="100dp"
         android:layout_margin="5dp"
         android:layout_marginTop="10dp"
         app:cardBackgroundColor="?attr/backgroundCardSecondaryColor"
@@ -24,8 +24,8 @@
 
             <ImageView
                 android:id="@+id/weekly_summary_icon"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
                 android:layout_marginStart="20dp"
                 android:contentDescription="@string/weekly_summary_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -54,7 +54,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/card_lineChart"
         android:layout_width="match_parent"
-        android:layout_height="480dp"
+        android:layout_height="500dp"
         android:layout_margin="5dp"
         android:layout_marginTop="20dp"
         app:cardBackgroundColor="@color/card_bg_color"

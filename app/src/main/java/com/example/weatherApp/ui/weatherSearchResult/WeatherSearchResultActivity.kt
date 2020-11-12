@@ -6,9 +6,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.database.Cursor
 import android.database.MatrixCursor
+import android.opengl.Visibility
 import android.os.Bundle
 import android.provider.BaseColumns
+import android.util.Log
 import android.view.Menu
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
@@ -61,6 +65,16 @@ class WeatherSearchResultActivity : AppCompatActivity(), KodeinAware{
 
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(WeatherSearchActivityViewModel::class.java)
+
+        if (!viewModel.checkInternetConnection()){
+            internet_summary_card.visibility = View.VISIBLE
+        } else{
+            internet_summary_card.visibility = View.GONE
+        }
+
+        refresh_button.setOnClickListener {
+            this.recreate()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

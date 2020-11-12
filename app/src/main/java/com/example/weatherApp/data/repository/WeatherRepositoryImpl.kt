@@ -1,5 +1,7 @@
 package com.example.weatherApp.data.repository
 
+
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.weatherApp.data.db.daos.CityImagesDAO
 import com.example.weatherApp.data.db.daos.CurrentWeatherDAO
@@ -8,6 +10,7 @@ import com.example.weatherApp.data.db.entities.ImagesResponseEntity
 import com.example.weatherApp.data.db.entities.LocationEntity
 import com.example.weatherApp.data.network.connectivity.WeatherNetworkDataSource
 import com.example.weatherApp.data.network.pojos.AutocompleteResponse
+import com.example.weatherApp.ui.helpers.CurrentLocation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -20,7 +23,8 @@ import org.threeten.bp.ZonedDateTime
 class WeatherRepositoryImpl(
     private val currentWeatherDAO: CurrentWeatherDAO,
     private val weatherNetworkDataSource: WeatherNetworkDataSource,
-    private val cityImagesDAO: CityImagesDAO
+    private val cityImagesDAO: CityImagesDAO,
+    private val currentLocationGetter: CurrentLocation
 ) : WeatherRepository {
 
     init{
@@ -30,6 +34,11 @@ class WeatherRepositoryImpl(
 
         weatherNetworkDataSource.downloadedCityImages.observeForever{ newCityImages ->
             persistCityImages(newCityImages)
+        }
+
+        currentLocationGetter.getCurrentLocation()
+        currentLocationGetter.location.observeForever{
+            Log.d("data", "location here: $it")
         }
     }
 
@@ -136,7 +145,6 @@ class WeatherRepositoryImpl(
     }
 
     private fun isFetchNeeded(lastFetchTime: ZonedDateTime): Boolean{
-
         val result = Duration.between(lastFetchTime, ZonedDateTime.now())
         val threshold = Duration.ofMinutes(15)
         return result > threshold

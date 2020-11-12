@@ -9,12 +9,21 @@
             android:defaultValue="false">
         </SwitchPreference>
     </PreferenceCategory>
+
     <PreferenceCategory
         android:title="Switch themes">
         <SwitchPreference
             android:key="SWITCH_THEME"
-            android:title="Dark theme"
             android:summary="Switch to toggle between dark and light theme"
+            android:defaultValue="true">
+        </SwitchPreference>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Current Location Permissions">
+        <SwitchPreference
+            android:key="SWITCH_CURRENT_LOCATION_PREFERENCES"
+            android:summary="Manage your location access preferences"
             android:defaultValue="true">
         </SwitchPreference>
     </PreferenceCategory>

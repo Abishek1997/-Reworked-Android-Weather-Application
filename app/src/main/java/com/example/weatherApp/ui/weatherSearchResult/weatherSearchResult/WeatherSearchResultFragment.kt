@@ -4,13 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.*
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -23,7 +21,6 @@ import com.example.weatherApp.data.network.pojos.DailyData
 import com.example.weatherApp.ui.customcoroutines.ScopedFragment
 import com.example.weatherApp.ui.helpers.RecyclerViewItem
 import com.example.weatherApp.ui.searchResultDetails.SearchResultDetailsActivity
-import com.example.weatherApp.ui.weatherSearchResult.futureWeather.FutureWeatherFragmentArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import kotlinx.android.synthetic.main.activity_weather_search_result.*
@@ -40,6 +37,8 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
     private val viewModelFactory: WeatherSearchResultViewModelFactory by instance()
     private lateinit var viewModel: WeatherSearchResultViewModel
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var temperatureUnitPreferences: SharedPreferences
+    private lateinit var currentLocationPreferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
 
     override fun onCreateView(
@@ -47,6 +46,9 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
         savedInstanceState: Bundle?
     ): View? {
         sharedPreferences = requireContext().getSharedPreferences("Favorites", Context.MODE_PRIVATE)
+        temperatureUnitPreferences = requireContext().getSharedPreferences("Theme", Context.MODE_PRIVATE)
+        currentLocationPreferences = requireContext().getSharedPreferences("Theme", Context.MODE_PRIVATE)
+
         return inflater.inflate(R.layout.weather_search_result_fragment, container, false)
     }
 
@@ -69,8 +71,12 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
 
         val bottomNav = activity?.bottomNav_home
         bottomNav?.visibility = View.VISIBLE
-        if (! sharedPreferences.contains("initData")){
-            currentWeather = viewModel.currentWeather.await()
+        if (!sharedPreferences.contains("initData")){
+            if((currentLocationPreferences.getString("currentLocationPreference", String()) == "no")){
+                Log.d("data", "no")
+            } else{
+                currentWeather = viewModel.currentWeather.await()
+            }
             editor = sharedPreferences.edit()
             editor.putString("initData", "available")
             editor.apply()
@@ -120,19 +126,23 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
     }
 
     private fun List<DailyData>.toRecyclerViewItem(): List<RecyclerViewItem>{
+        val temperaturePreferences = temperatureUnitPreferences.getString("temperatureUnit", String())
         return this.map {
-            RecyclerViewItem(it)
+            RecyclerViewItem(it, temperaturePreferences)
         }
     }
     private fun setUIFirstCard(rawTemperature: Double, rawSummary: String, rawIcon: String) {
 
-        val temperature = rawTemperature.roundToInt().toString() + getString(R.string.degree_fahrenheit)
-        textView_temperature.text = temperature
-        val summary: String
-        if (rawSummary.length > 20){
-            summary = (rawSummary.subSequence(0, 20) as String) + "-\n" + (rawSummary.subSequence(20, rawSummary.length))
+        val temperature: String = if (temperatureUnitPreferences.getString("temperatureUnit", String()) == "celcius"){
+            ((rawTemperature - 32) * 0.55).toInt().toString() + getString(R.string.degree_celcius)
         } else{
-            summary = rawSummary
+            rawTemperature.roundToInt().toString() + getString(R.string.degree_fahrenheit)
+        }
+        textView_temperature.text = temperature
+        val summary: String = if (rawSummary.length > 20){
+            (rawSummary.subSequence(0, 20) as String) + "-\n" + (rawSummary.subSequence(20, rawSummary.length))
+        } else{
+            rawSummary
         }
         textView_summary.text = summary
         setIconFromData(rawIcon)

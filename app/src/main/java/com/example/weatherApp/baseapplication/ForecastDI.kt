@@ -6,6 +6,7 @@ import com.example.weatherApp.data.network.DarkskyWeatherApiService
 import com.example.weatherApp.data.network.connectivity.*
 import com.example.weatherApp.data.repository.WeatherRepository
 import com.example.weatherApp.data.repository.WeatherRepositoryImpl
+import com.example.weatherApp.ui.helpers.CurrentLocationImpl
 import com.example.weatherApp.ui.searchResultDetails.SearchResultDetailsViewModelFactory
 import com.example.weatherApp.ui.weatherSearchResult.WeatherSearchActivityViewmodelFactory
 import com.example.weatherApp.ui.weatherSearchResult.favorites.FavoritesViewModelFactory
@@ -29,9 +30,10 @@ class ForecastDI : Application(), KodeinAware {
         bind() from singleton { DarkskyWeatherApiService(instance()) }
         bind<WeatherNetworkDataSource>() with singleton { WeatherNetworkDataSourceImpl(instance()) }
         bind() from singleton { instance<WeatherDatabase>().getCityImagesDao() }
-        bind<WeatherRepository>() with singleton { WeatherRepositoryImpl(instance(), instance(), instance()) }
+        bind() from provider { CurrentLocationImpl(instance()) }
+        bind<WeatherRepository>() with singleton { WeatherRepositoryImpl(instance(), instance(), instance(), instance()) }
         bind() from provider { WeatherSearchResultViewModelFactory(instance()) }
-        bind() from provider { WeatherSearchActivityViewmodelFactory(instance()) }
+        bind() from provider { WeatherSearchActivityViewmodelFactory(instance(), instance()) }
         bind() from provider { SearchResultDetailsViewModelFactory(instance()) }
         bind() from provider { FavoritesViewModelFactory(instance())}
     }

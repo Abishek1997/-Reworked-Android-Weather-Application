@@ -1,6 +1,10 @@
 package com.example.weatherApp.ui.helpers
 
 import android.annotation.SuppressLint
+import android.content.ContentProvider
+import android.content.Context
+import android.provider.Settings.Global.getString
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.Weatherapplication.R
 import com.example.weatherApp.data.network.pojos.DailyData
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -8,10 +12,12 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.recycler_view_list_item.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 class RecyclerViewItem(
-    val dailyWeatherEntry: DailyData
-) : Item(){
+    val dailyWeatherEntry: DailyData,
+    private val temperaturePreferences: String?
+) : Item() {
     @SuppressLint("SetTextI18n")
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
@@ -21,8 +27,20 @@ class RecyclerViewItem(
             val rawIcon = dailyWeatherEntry.icon
             recyclerView_card_icon.setImageResource(setIcon(rawIcon))
 
-            recyclerView_card_tempMin.text = dailyWeatherEntry.temperatureLow.toString() + " \u2109"
-            recyclerView_card_tempMax.text = dailyWeatherEntry.temperatureHigh.toString() + " \u2109"
+            val temperatureLow: String = if (temperaturePreferences == "celcius"){
+                ((dailyWeatherEntry.temperatureLow - 32) * 0.55).toInt().toString() + " \u2103"
+            } else{
+                dailyWeatherEntry.temperatureLow.roundToInt().toString() + " \u2109"
+            }
+
+            val temperatureHigh: String = if (temperaturePreferences == "celcius"){
+                ((dailyWeatherEntry.temperatureHigh - 32) * 0.55).toInt().toString() + " \u2103"
+            } else{
+                dailyWeatherEntry.temperatureHigh.roundToInt().toString() + " \u2109"
+            }
+
+            recyclerView_card_tempMin.text = temperatureLow
+            recyclerView_card_tempMax.text = temperatureHigh
         }
     }
 

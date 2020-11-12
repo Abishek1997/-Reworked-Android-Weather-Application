@@ -92,7 +92,6 @@ class FavoritesFragment : ScopedFragment(), FavoritesRecyclerView.AdapterListene
     }
 
     override fun onClickItem(position: Int){
-        Log.d("data", "${groupieAdapter.getItem(position)}")
         favoritesRecyclerViewItems.remove(groupieAdapter.getItem(position))
         setFavoritesRecyclerView(favoritesRecyclerViewItems)
     }

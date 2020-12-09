@@ -140,9 +140,6 @@ class WeatherRepositoryImpl(
     }
 
     private suspend fun fetchCurrentWeather(){
-        currentLocationGetter.locationObject.observe(this, {
-            Log.d("data", "${it.latitude}, ${it.longitude}")
-        })
         weatherNetworkDataSource.fetchCurrentWeather( 34.04563903808594 ,  -118.24163818359375 )
     }
 

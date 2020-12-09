@@ -1,15 +1,22 @@
 package com.example.weatherApp.ui.weatherSearchResult.weatherSearchResult
 
+import android.Manifest
 import android.content.Context
+import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.graphics.*
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,14 +25,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.Weatherapplication.R
 import com.example.weatherApp.data.db.entities.CurrentWeatherEntity
 import com.example.weatherApp.data.network.pojos.DailyData
+import com.example.weatherApp.data.network.pojos.LocationObject
 import com.example.weatherApp.ui.customcoroutines.ScopedFragment
 import com.example.weatherApp.ui.helpers.RecyclerViewItem
 import com.example.weatherApp.ui.searchResultDetails.SearchResultDetailsActivity
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import kotlinx.android.synthetic.main.activity_weather_search_result.*
 import kotlinx.android.synthetic.main.weather_search_result_fragment.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -41,6 +52,7 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
     private lateinit var currentLocationPreferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,7 +60,6 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
         sharedPreferences = requireContext().getSharedPreferences("Favorites", Context.MODE_PRIVATE)
         temperatureUnitPreferences = requireContext().getSharedPreferences("Theme", Context.MODE_PRIVATE)
         currentLocationPreferences = requireContext().getSharedPreferences("Theme", Context.MODE_PRIVATE)
-
         return inflater.inflate(R.layout.weather_search_result_fragment, container, false)
     }
 
@@ -65,18 +76,22 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
 
     private fun bindUI() = launch {
 
+        var city: String = ""
+
+
         val toolBar = activity?.toolbar
         toolBar?.visibility = View.VISIBLE
-        lateinit var currentWeather: LiveData<out CurrentWeatherEntity>
+        val currentWeather: LiveData<out CurrentWeatherEntity>
 
         val bottomNav = activity?.bottomNav_home
         bottomNav?.visibility = View.VISIBLE
         if (!sharedPreferences.contains("initData")){
-            if((currentLocationPreferences.getString("currentLocationPreference", String()) == "no")){
-                Log.d("data", "no")
-            } else{
-                currentWeather = viewModel.currentWeather.await()
-            }
+            currentWeather =
+                if((currentLocationPreferences.getString("currentLocationPreference", String()) == "no")){
+                    viewModel.getWeatherData()
+                } else{
+                    viewModel.currentWeather()
+                }
             editor = sharedPreferences.edit()
             editor.putString("initData", "available")
             editor.apply()
@@ -131,6 +146,7 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
             RecyclerViewItem(it, temperaturePreferences)
         }
     }
+
     private fun setUIFirstCard(rawTemperature: Double, rawSummary: String, rawIcon: String) {
 
         val temperature: String = if (temperatureUnitPreferences.getString("temperatureUnit", String()) == "celcius"){
@@ -228,5 +244,4 @@ class WeatherSearchResultFragment : ScopedFragment(), KodeinAware {
             editor.apply()
         }
     }
-
 }

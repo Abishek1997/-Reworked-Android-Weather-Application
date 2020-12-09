@@ -10,8 +10,8 @@ import com.example.weatherApp.internal.lazyDeferred
 class WeatherSearchResultViewModel(
     private val weatherRepository: WeatherRepository
 ) : ViewModel() {
-    val currentWeather by lazyDeferred {
-        weatherRepository.getCurrentWeather()
+    suspend fun currentWeather(): LiveData<out CurrentWeatherEntity>{
+        return weatherRepository.getCurrentWeather()
     }
 
     suspend fun getWeatherData(): LiveData<out CurrentWeatherEntity>{

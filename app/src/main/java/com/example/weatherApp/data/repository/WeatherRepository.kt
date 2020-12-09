@@ -6,6 +6,7 @@ import com.example.weatherApp.data.db.entities.ImagesResponseEntity
 import com.example.weatherApp.data.db.entities.LocationEntity
 import com.example.weatherApp.data.network.pojos.AutocompleteResponse
 import com.example.weatherApp.data.network.pojos.ImagesResponse
+import com.example.weatherApp.data.network.pojos.LocationObject
 
 interface WeatherRepository {
     suspend fun getCurrentWeather(): LiveData<out CurrentWeatherEntity>
@@ -19,4 +20,6 @@ interface WeatherRepository {
     suspend fun getSearchedCityImages(city: String)
 
     suspend fun getAutocompleteCities(city: String): LiveData<out AutocompleteResponse>
+
+    suspend fun getCurrentFusedLocation(): LiveData<LocationObject>
 }

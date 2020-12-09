@@ -14,16 +14,18 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.util.*
 
-
-class CurrentLocationImpl(
+class CurrentLocationAccessImpl(
     private val context: Context
-) : CurrentLocation {
+) : CurrentLocationAccess {
+
     private var fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(
         context
     )
-    private val _location = MutableLiveData<LocationObject>()
-    override val location: LiveData<LocationObject>
-        get() = _location
+    private val _locationObject = MutableLiveData<LocationObject>()
+    private val geoCoder: Geocoder = Geocoder(context, Locale.getDefault())
+    override val locationObject: LiveData<LocationObject>
+        get() = _locationObject
+
     override fun getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(
                 context,
@@ -33,21 +35,16 @@ class CurrentLocationImpl(
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            Log.d("data", "no permission")
+           Log.d("data", "no permission")
             return
         }
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener {
-                val geocoder = Geocoder(context, Locale.getDefault())
-                val addresses: List<Address> = geocoder.getFromLocation(it.latitude, it.longitude, 1)
-                val city = "${addresses[0].locality}, ${addresses[0].adminArea}, ${addresses[0].countryName}"
-                val tempLocation = LocationObject(0.0, 0.0, "")
-                tempLocation.city = city
-                tempLocation.latitude = it.latitude
-                tempLocation.longitude = it.longitude
-                Log.d("data", "location: $tempLocation")
-                _location.value = tempLocation
-            }
-
+        fusedLocationClient.lastLocation.addOnSuccessListener {
+            val addresses: List<Address> = geoCoder.getFromLocation(it.latitude, it.longitude, 1)
+            val tempLocationObject = LocationObject(0.0, 0.0, "")
+            tempLocationObject.latitude = it.latitude
+            tempLocationObject.longitude = it.longitude
+            tempLocationObject.city = "${addresses[0].locality}, ${addresses[0].adminArea}, ${addresses[0].countryName}"
+            _locationObject.value = tempLocationObject
+        }
     }
 }

@@ -2,6 +2,8 @@ package com.example.weatherApp.data.repository
 
 
 import android.util.Log
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import com.example.weatherApp.data.db.daos.CityImagesDAO
 import com.example.weatherApp.data.db.daos.CurrentWeatherDAO
@@ -10,11 +12,9 @@ import com.example.weatherApp.data.db.entities.ImagesResponseEntity
 import com.example.weatherApp.data.db.entities.LocationEntity
 import com.example.weatherApp.data.network.connectivity.WeatherNetworkDataSource
 import com.example.weatherApp.data.network.pojos.AutocompleteResponse
-import com.example.weatherApp.ui.helpers.CurrentLocation
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.example.weatherApp.data.network.pojos.LocationObject
+import com.example.weatherApp.ui.helpers.CurrentLocationAccess
+import kotlinx.coroutines.*
 import org.threeten.bp.Duration
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
@@ -24,8 +24,8 @@ class WeatherRepositoryImpl(
     private val currentWeatherDAO: CurrentWeatherDAO,
     private val weatherNetworkDataSource: WeatherNetworkDataSource,
     private val cityImagesDAO: CityImagesDAO,
-    private val currentLocationGetter: CurrentLocation
-) : WeatherRepository {
+    private val currentLocationGetter: CurrentLocationAccess
+) : WeatherRepository, LifecycleOwner {
 
     init{
         weatherNetworkDataSource.downloadedCurrentWeather.observeForever{ newCurrentWeather ->
@@ -37,9 +37,11 @@ class WeatherRepositoryImpl(
         }
 
         currentLocationGetter.getCurrentLocation()
-        currentLocationGetter.location.observeForever{
-            Log.d("data", "location here: $it")
-        }
+    }
+
+    override suspend fun getCurrentFusedLocation(): LiveData<LocationObject> {
+        currentLocationGetter.getCurrentLocation()
+        return currentLocationGetter.locationObject
     }
 
     override suspend fun getWeatherData(): LiveData<out CurrentWeatherEntity> {
@@ -138,15 +140,19 @@ class WeatherRepositoryImpl(
     }
 
     private suspend fun fetchCurrentWeather(){
-        weatherNetworkDataSource.fetchCurrentWeather(
-            34.04563903808594,
-            -118.24163818359375
-        )
+        currentLocationGetter.locationObject.observe(this, {
+            Log.d("data", "${it.latitude}, ${it.longitude}")
+        })
+        weatherNetworkDataSource.fetchCurrentWeather( 34.04563903808594 ,  -118.24163818359375 )
     }
 
     private fun isFetchNeeded(lastFetchTime: ZonedDateTime): Boolean{
         val result = Duration.between(lastFetchTime, ZonedDateTime.now())
         val threshold = Duration.ofMinutes(15)
         return result > threshold
+    }
+
+    override fun getLifecycle(): Lifecycle {
+        TODO("Not yet implemented")
     }
 }

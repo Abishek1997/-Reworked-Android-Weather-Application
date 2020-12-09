@@ -54,7 +54,7 @@ class FutureWeatherFragment : ScopedFragment(), KodeinAware {
         val bottomNav = activity?.bottomNav_home
         bottomNav?.visibility = View.GONE
 
-        val futureWeather = viewModel.currentWeather.await()
+        val futureWeather = viewModel.currentWeather()
         futureWeather.observe(viewLifecycleOwner, Observer {
             if (it.daily?.data == null){
                 return@Observer

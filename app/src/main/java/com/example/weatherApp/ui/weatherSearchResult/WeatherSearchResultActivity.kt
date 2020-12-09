@@ -1,5 +1,6 @@
 package com.example.weatherApp.ui.weatherSearchResult
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
@@ -38,7 +39,7 @@ import org.kodein.di.generic.instance
 
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-class WeatherSearchResultActivity : AppCompatActivity(), KodeinAware{
+class   WeatherSearchResultActivity : AppCompatActivity(), KodeinAware{
 
     override val kodein by closestKodein()
     private val viewModelFactory: WeatherSearchActivityViewmodelFactory by instance()
@@ -59,6 +60,9 @@ class WeatherSearchResultActivity : AppCompatActivity(), KodeinAware{
         setContentView(R.layout.activity_weather_search_result)
         setSupportActionBar(toolbar)
         sharedPreferences = applicationContext.getSharedPreferences("Favorites", Context.MODE_PRIVATE)
+        editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_search)
         bottomNav_home.setupWithNavController(navController)
         NavigationUI.setupActionBarWithNavController(this, navController)
@@ -93,7 +97,7 @@ class WeatherSearchResultActivity : AppCompatActivity(), KodeinAware{
             this,
             android.R.layout.simple_list_item_1,
             null, arrayOf(SearchManager.SUGGEST_COLUMN_TEXT_1), intArrayOf(android.R.id.text1),
-            0
+            0,
         )
         searchView.suggestionsAdapter = suggestionAdapter
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -152,11 +156,8 @@ class WeatherSearchResultActivity : AppCompatActivity(), KodeinAware{
         return true
     }
 
+    @SuppressLint("ApplySharedPref")
     override fun onDestroy() {
         super.onDestroy()
-        editor = sharedPreferences.edit()
-        editor.remove("initData")
-        editor.apply()
     }
-
 }
